@@ -333,6 +333,31 @@ function displayCryptoCards() {
             </div>
         `;
     }).join('');
+    
+    // 填充所有 datalist
+    populateDataLists();
+}
+
+// ============================================
+// 填充搜索建议列表
+// ============================================
+function populateDataLists() {
+    const datalists = [
+        { id: 'chartCryptoList', inputId: 'chartCryptoInput' },
+        { id: 'comparisonCryptoList1', inputId: 'comparisonInput1' },
+        { id: 'comparisonCryptoList2', inputId: 'comparisonInput2' },
+        { id: 'predictionCryptoList', inputId: 'predictionCryptoInput' },
+        { id: 'realtimeCryptoList', inputId: 'realtimeCryptoInput' }
+    ];
+    
+    datalists.forEach(({ id }) => {
+        const datalist = document.getElementById(id);
+        if (!datalist) return;
+        
+        datalist.innerHTML = appState.cryptoData.slice(0, 100).map(crypto => 
+            `<option value="${crypto.name}" label="${crypto.symbol.toUpperCase()}"></option>`
+        ).join('');
+    });
 }
 
 // ============================================
@@ -1295,4 +1320,303 @@ function getTimeAgo(date) {
     if (seconds < 3600) return `${Math.floor(seconds / 60)}分钟前`;
     if (seconds < 86400) return `${Math.floor(seconds / 3600)}小时前`;
     return `${Math.floor(seconds / 86400)}天前`;
+}
+
+// ============================================
+// AI 市场预测功能
+// ============================================
+async function generatePrediction() {
+    const input = document.getElementById('predictionCryptoInput');
+    const cryptoName = input.value.toLowerCase();
+    
+    if (!cryptoName) {
+        alert('请选择一个币种');
+        return;
+    }
+    
+    // 查找匹配的加密货币
+    const crypto = appState.cryptoData.find(c => 
+        c.name.toLowerCase().includes(cryptoName) || 
+        c.symbol.toLowerCase() === cryptoName
+    );
+    
+    if (!crypto) {
+        alert('未找到该加密货币');
+        return;
+    }
+    
+    try {
+        // 获取历史价格数据
+        const response = await fetch(
+            `${API_CONFIG.baseUrl}/coins/${crypto.id}/market_chart?vs_currency=usd&days=90`
+        );
+        const data = await response.json();
+        const prices = data.prices.map(p => p[1]);
+        
+        // 计算技术指标
+        const prediction = calculatePrediction(prices, crypto);
+        displayPrediction(crypto, prediction, prices);
+    } catch (error) {
+        console.error('获取预测数据失败:', error);
+        alert('获取预测数据失败');
+    }
+}
+
+function calculatePrediction(prices, crypto) {
+    const currentPrice = prices[prices.length - 1];
+    const avgPrice = prices.reduce((a, b) => a + b) / prices.length;
+    const maxPrice = Math.max(...prices);
+    const minPrice = Math.min(...prices);
+    
+    // 计算趋势（简单线性回归）
+    const trend = calculateTrend(prices);
+    const momentum = calculateMomentum(prices);
+    const rsi = calculateRSI(prices);
+    
+    // 预测方向
+    let direction = 'neutral';
+    let confidence = 0;
+    
+    if (trend > 0.01 && momentum > 0 && rsi < 70) {
+        direction = 'bullish';
+        confidence = Math.min(90, (trend * 1000 + momentum * 50 + (70 - rsi)) / 2);
+    } else if (trend < -0.01 && momentum < 0 && rsi > 30) {
+        direction = 'bearish';
+        confidence = Math.min(90, (-trend * 1000 - momentum * 50 + (rsi - 30)) / 2);
+    } else {
+        confidence = 50;
+    }
+    
+    // 价格目标
+    const volatility = calculateVolatility(prices);
+    const resistancePrice = currentPrice + (volatility * 0.5);
+    const supportPrice = currentPrice - (volatility * 0.5);
+    const targetPrice = currentPrice + (trend * currentPrice);
+    
+    return {
+        direction,
+        confidence: Math.round(confidence),
+        currentPrice: currentPrice.toFixed(2),
+        targetPrice: targetPrice.toFixed(2),
+        resistance: resistancePrice.toFixed(2),
+        support: supportPrice.toFixed(2),
+        rsi: rsi.toFixed(2),
+        trend: trend.toFixed(4),
+        momentum: momentum.toFixed(4),
+        volatility: (volatility * 100).toFixed(2),
+        prices: prices.slice(-30) // 最后30个价格用于图表
+    };
+}
+
+function calculateTrend(prices) {
+    const length = prices.length;
+    if (length < 2) return 0;
+    
+    const sumX = (length * (length + 1)) / 2;
+    const sumX2 = (length * (length + 1) * (2 * length + 1)) / 6;
+    const sumY = prices.reduce((a, b) => a + b);
+    const sumXY = prices.reduce((sum, y, x) => sum + (x + 1) * y, 0);
+    
+    const slope = (length * sumXY - sumX * sumY) / (length * sumX2 - sumX * sumX);
+    return slope / prices[prices.length - 1];
+}
+
+function calculateMomentum(prices) {
+    if (prices.length < 2) return 0;
+    return (prices[prices.length - 1] - prices[Math.max(0, prices.length - 10)]) / prices[Math.max(0, prices.length - 10)];
+}
+
+function calculateVolatility(prices) {
+    const mean = prices.reduce((a, b) => a + b) / prices.length;
+    const squaredDiffs = prices.map(p => Math.pow(p - mean, 2));
+    const variance = squaredDiffs.reduce((a, b) => a + b) / prices.length;
+    return Math.sqrt(variance);
+}
+
+function displayPrediction(crypto, prediction, prices) {
+    const container = document.getElementById('predictionContainer');
+    const directionEmoji = prediction.direction === 'bullish' ? '🚀' : prediction.direction === 'bearish' ? '📉' : '➡️';
+    const directionCN = prediction.direction === 'bullish' ? '看涨' : prediction.direction === 'bearish' ? '看跌' : '震荡';
+    const trendClass = prediction.direction === 'bullish' ? 'positive' : prediction.direction === 'bearish' ? 'negative' : '';
+    
+    container.innerHTML = `
+        <div class="prediction-card">
+            <div class="prediction-header">
+                <div class="prediction-name">${directionEmoji} ${crypto.name}</div>
+                <div class="prediction-info">${crypto.symbol.toUpperCase()} - 信号强度: ${prediction.confidence}%</div>
+            </div>
+            
+            <div class="prediction-metrics">
+                <div class="metric">
+                    <div class="metric-label">当前价格</div>
+                    <div class="metric-value">$${prediction.currentPrice}</div>
+                </div>
+                
+                <div class="metric">
+                    <div class="metric-label">预测目标价</div>
+                    <div class="metric-value">$${prediction.targetPrice}</div>
+                    <div class="metric-trend ${prediction.targetPrice > prediction.currentPrice ? 'positive' : 'negative'}">
+                        ${prediction.targetPrice > prediction.currentPrice ? '↑' : '↓'} 
+                        ${Math.abs(((prediction.targetPrice - prediction.currentPrice) / prediction.currentPrice * 100).toFixed(2))}%
+                    </div>
+                </div>
+                
+                <div class="metric">
+                    <div class="metric-label">支撑位 / 阻力位</div>
+                    <div class="metric-value">$${prediction.support} / $${prediction.resistance}</div>
+                </div>
+                
+                <div class="metric">
+                    <div class="metric-label">趋势评分</div>
+                    <div class="metric-value">${directionCN} (${prediction.confidence}%)</div>
+                    <div class="metric-trend ${trendClass}">
+                        RSI: ${prediction.rsi} | 波动率: ${prediction.volatility}%
+                    </div>
+                </div>
+            </div>
+            
+            <div class="prediction-chart" id="predictionChart"></div>
+        </div>
+    `;
+    
+    // 简单的图表显示
+    drawSimpleChart('predictionChart', prediction.prices);
+}
+
+function drawSimpleChart(containerId, prices) {
+    const container = document.getElementById(containerId);
+    if (!container || prices.length < 2) return;
+    
+    const width = container.offsetWidth;
+    const height = container.offsetHeight;
+    const minPrice = Math.min(...prices);
+    const maxPrice = Math.max(...prices);
+    const range = maxPrice - minPrice || 1;
+    
+    let svg = `<svg width="100%" height="100%" viewBox="0 0 ${width} ${height}">`;
+    
+    // 画线
+    let pathD = 'M';
+    prices.forEach((price, index) => {
+        const x = (index / (prices.length - 1)) * width;
+        const y = height - ((price - minPrice) / range) * height;
+        pathD += `${x},${y} `;
+    });
+    
+    svg += `<polyline points="${pathD}" fill="none" stroke="#6366f1" stroke-width="2" />`;
+    svg += `</svg>`;
+    
+    container.innerHTML = svg;
+}
+
+// ============================================
+// 实时 WebSocket 价格推送
+// ============================================
+let websocketConnection = null;
+let selectedRealtimeCrypto = null;
+
+function toggleRealtimeConnection() {
+    const input = document.getElementById('realtimeCryptoInput');
+    const cryptoName = input.value.toLowerCase();
+    
+    if (!cryptoName) {
+        alert('请先选择一个币种');
+        return;
+    }
+    
+    const crypto = appState.cryptoData.find(c => 
+        c.name.toLowerCase().includes(cryptoName) || 
+        c.symbol.toLowerCase() === cryptoName
+    );
+    
+    if (!crypto) {
+        alert('未找到该加密货币');
+        return;
+    }
+    
+    if (websocketConnection) {
+        disconnectRealtimeData();
+    } else {
+        connectRealtimeData(crypto);
+    }
+}
+
+function connectRealtimeData(crypto) {
+    selectedRealtimeCrypto = crypto;
+    const btn = document.getElementById('connectBtn');
+    const status = document.getElementById('connectionStatus');
+    
+    // 由于免费 WebSocket 服务有限，我们使用轮询方式模拟实时推送
+    status.textContent = '● 已连接';
+    status.classList.remove('disconnected');
+    status.classList.add('connected');
+    btn.textContent = '断开连接';
+    
+    // 启动轮询
+    const pollInterval = setInterval(() => {
+        updateRealtimePrice(crypto, pollInterval);
+    }, 2000);
+    
+    websocketConnection = pollInterval;
+    updateRealtimePrice(crypto, pollInterval);
+}
+
+function disconnectRealtimeData() {
+    if (websocketConnection) {
+        clearInterval(websocketConnection);
+        websocketConnection = null;
+    }
+    
+    const btn = document.getElementById('connectBtn');
+    const status = document.getElementById('connectionStatus');
+    const container = document.getElementById('realtimePrices');
+    
+    status.textContent = '● 未连接';
+    status.classList.add('disconnected');
+    status.classList.remove('connected');
+    btn.textContent = '连接实时数据';
+    container.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-secondary);">未连接</div>';
+    selectedRealtimeCrypto = null;
+}
+
+async function updateRealtimePrice(crypto, interval) {
+    try {
+        const response = await fetch(
+            `${API_CONFIG.baseUrl}/simple/price?ids=${crypto.id}&vs_currencies=usd&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true`
+        );
+        const data = await response.json();
+        const priceData = data[crypto.id];
+        
+        const container = document.getElementById('realtimePrices');
+        const timestamp = new Date().toLocaleTimeString('zh-CN');
+        const priceChange = priceData.usd_24h_change || 0;
+        const changeClass = priceChange > 0 ? 'up' : priceChange < 0 ? 'down' : '';
+        const changeSymbol = priceChange > 0 ? '↑' : priceChange < 0 ? '↓' : '→';
+        
+        container.innerHTML = `
+            <div class="realtime-price-item">
+                <div class="price-info">
+                    <div class="price-icon">${crypto.symbol.toUpperCase()}</div>
+                    <div class="price-details">
+                        <h3>${crypto.name}</h3>
+                        <p>${crypto.symbol.toUpperCase()}/USD</p>
+                    </div>
+                </div>
+                <div class="price-current">
+                    <div class="price-value">$${priceData.usd.toFixed(2)}</div>
+                    <div class="price-change ${changeClass}">
+                        ${changeSymbol} ${Math.abs(priceChange).toFixed(2)}%
+                    </div>
+                </div>
+                <div>
+                    <div class="price-timestamp">${timestamp}</div>
+                    <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                        交易量: $${(priceData.usd_24h_vol / 1000000).toFixed(2)}M
+                    </div>
+                </div>
+            </div>
+        `;
+    } catch (error) {
+        console.error('更新实时价格失败:', error);
+    }
 }
