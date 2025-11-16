@@ -124,6 +124,10 @@ html {
     position: relative;
     overflow: hidden;
     min-height: 400px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
 }
 
 #globe-bg {
