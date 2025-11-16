@@ -1152,23 +1152,50 @@ html {
 }
 
 /* ============================================
-   响应式设计
+   响应式设计 - 平板设备 (768px 以下)
    ============================================ */
 @media (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+
+    /* 导航栏优化 */
     .navbar-container {
-        flex-wrap: wrap;
+        padding: 0.75rem 1rem;
+        gap: 1rem;
+    }
+
+    .navbar-logo {
+        font-size: 1.2rem;
+    }
+
+    .theme-toggle {
+        font-size: 1.25rem;
+        padding: 0.4rem;
     }
 
     .hamburger {
         display: flex;
+        gap: 4px;
+    }
+
+    .hamburger span {
+        width: 20px;
+        height: 2.5px;
     }
 
     .nav-menu {
         display: none;
         flex-direction: column;
-        width: 100%;
-        gap: 1rem;
-        margin-top: 1rem;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        padding: 1rem;
+        gap: 0.5rem;
+        z-index: 999;
     }
 
     .nav-menu.active {
@@ -1176,83 +1203,583 @@ html {
     }
 
     .nav-link {
-        padding: 0.5rem 0;
+        padding: 0.75rem 1rem;
+        display: block;
     }
 
+    /* Hero 区域 */
     .hero {
         flex-direction: column;
         text-align: center;
-        min-height: auto;
+        min-height: 300px;
+        padding: 2rem 1rem;
+    }
+
+    .hero-content {
+        margin-bottom: 1.5rem;
     }
 
     .hero-title {
-        font-size: 2rem;
-    }
-
-    .hero-image {
-        font-size: 5rem;
+        font-size: 1.75rem;
+        margin-bottom: 0.75rem;
     }
 
     .hero-subtitle {
-        font-size: 1rem;
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+    }
+
+    .hero-image {
+        font-size: 4rem;
+        opacity: 0.15;
+    }
+
+    /* 统计卡片 */
+    .stats-section {
+        padding: 2rem 1rem;
     }
 
     .stats-container {
         grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
     }
 
-    .section-header h2 {
-        font-size: 1.75rem;
-    }
-
-    .filter-controls {
-        flex-direction: column;
-    }
-
-    .search-box {
-        max-width: 100%;
-    }
-
-    .crypto-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .analysis-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .about-content {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 480px) {
-    .navbar-logo {
-        font-size: 1.2rem;
-    }
-
-    .hero-title {
-        font-size: 1.5rem;
+    .stat-card {
+        padding: 1rem;
     }
 
     .stat-value {
         font-size: 1.25rem;
     }
 
-    .stats-container {
-        grid-template-columns: 1fr;
+    /* 主容器 */
+    .main-container {
+        max-width: 100%;
+        padding: 0;
+    }
+
+    /* 分类区域 */
+    .overview-section,
+    .analysis-section,
+    .about-section,
+    .portfolio-section,
+    .comparison-section,
+    .charts-section,
+    .news-section {
+        padding: 2rem 1rem;
     }
 
     .section-header h2 {
         font-size: 1.5rem;
+        margin-bottom: 0.5rem;
     }
 
+    .section-header p {
+        font-size: 0.9rem;
+    }
+
+    /* 过滤控制 */
     .filter-controls {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .search-box,
+    .sort-select {
+        width: 100%;
+        font-size: 14px;
+        padding: 0.6rem 0.8rem;
+    }
+
+    /* 加密货币网格 */
+    .crypto-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .crypto-card {
+        padding: 1rem;
+    }
+
+    .crypto-header {
         gap: 0.5rem;
     }
 
+    .crypto-name {
+        font-size: 1rem;
+    }
+
+    .crypto-price {
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+    }
+
+    /* 分析网格 */
+    .analysis-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .analysis-card {
+        padding: 1rem;
+    }
+
+    .analysis-card h3 {
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
+    }
+
+    /* 投资组合 */
+    .portfolio-container {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .portfolio-form,
+    .portfolio-summary {
+        padding: 1rem;
+    }
+
+    .form-input {
+        padding: 0.6rem 0.8rem;
+        font-size: 14px;
+        margin-bottom: 0.6rem;
+    }
+
+    .portfolio-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .portfolio-list {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .portfolio-item {
+        padding: 1rem;
+    }
+
+    /* 对比分析 */
+    .comparison-controls {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .comparison-input {
+        width: 100%;
+        min-width: unset;
+        font-size: 14px;
+        padding: 0.6rem 0.8rem;
+    }
+
+    .comparison-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .comparison-card {
+        padding: 1rem;
+    }
+
+    .comparison-table {
+        font-size: 0.85rem;
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+        padding: 0.5rem;
+    }
+
+    /* 图表区域 */
+    .chart-controls {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .chart-input,
+    .chart-select {
+        width: 100%;
+        font-size: 14px;
+        padding: 0.6rem 0.8rem;
+    }
+
+    .chart-container {
+        padding: 1rem;
+        height: 300px;
+    }
+
+    /* 新闻区域 */
+    .news-filters {
+        gap: 0.5rem;
+    }
+
+    .news-filter-btn {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.85rem;
+    }
+
+    .news-item {
+        padding: 1rem;
+    }
+
+    .news-item-header {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .news-item-title {
+        font-size: 1rem;
+    }
+
+    .news-item-time {
+        margin-left: 0;
+    }
+
+    /* 关于区域 */
+    .about-content {
+        grid-template-columns: 1fr;
+    }
+
+    .about-card {
+        padding: 1.5rem;
+    }
+
+    .about-card i {
+        font-size: 2rem;
+    }
+
+    /* 页脚 */
+    .footer {
+        padding: 2rem 1rem;
+    }
+
+    .social-links {
+        gap: 1rem;
+    }
+
+    .social-links a {
+        width: 36px;
+        height: 36px;
+        font-size: 1.2rem;
+    }
+}
+
+/* ============================================
+   响应式设计 - 手机设备 (480px 以下)
+   ============================================ */
+@media (max-width: 480px) {
+    html {
+        font-size: 14px;
+    }
+
+    body {
+        font-size: 13px;
+    }
+
+    /* 导航栏 */
+    .navbar-container {
+        padding: 0.5rem 0.75rem;
+    }
+
+    .navbar-logo {
+        font-size: 1rem;
+        gap: 0.25rem;
+    }
+
+    .navbar-logo i {
+        font-size: 1.1rem;
+    }
+
+    .theme-toggle {
+        font-size: 1rem;
+        padding: 0.3rem;
+    }
+
+    /* Hero 区域 */
+    .hero {
+        min-height: 250px;
+        padding: 1.5rem 1rem;
+    }
+
+    .hero-title {
+        font-size: 1.4rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .hero-subtitle {
+        font-size: 0.85rem;
+        margin-bottom: 0.75rem;
+    }
+
     .btn {
-        padding: 0.6rem 1.2rem;
+        padding: 0.6rem 1rem;
         font-size: 0.9rem;
+    }
+
+    .hero-image {
+        font-size: 3rem;
+    }
+
+    /* 统计卡片 */
+    .stats-section {
+        padding: 1.5rem 0.75rem;
+    }
+
+    .stats-container {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .stat-card {
+        padding: 0.75rem;
+    }
+
+    .stat-value {
+        font-size: 1.1rem;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+    }
+
+    /* 分类区域 */
+    .overview-section,
+    .analysis-section,
+    .about-section,
+    .portfolio-section,
+    .comparison-section,
+    .charts-section,
+    .news-section {
+        padding: 1.5rem 0.75rem;
+    }
+
+    .section-header {
+        margin-bottom: 1.5rem;
+    }
+
+    .section-header h2 {
+        font-size: 1.3rem;
+    }
+
+    .section-header p {
+        font-size: 0.8rem;
+    }
+
+    /* 过滤控制 */
+    .filter-controls {
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .search-box,
+    .sort-select {
+        padding: 0.5rem 0.6rem;
+        font-size: 13px;
+    }
+
+    /* 加密货币卡片 */
+    .crypto-card {
+        padding: 0.75rem;
+    }
+
+    .crypto-name {
+        font-size: 0.9rem;
+    }
+
+    .crypto-symbol {
+        font-size: 0.75rem;
+    }
+
+    .crypto-price {
+        font-size: 1.1rem;
+    }
+
+    .crypto-change {
+        gap: 0.5rem;
+    }
+
+    .crypto-details {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+
+    .detail-label {
+        font-size: 0.7rem;
+    }
+
+    .detail-value {
+        font-size: 0.85rem;
+    }
+
+    /* 投资组合 */
+    .portfolio-container {
+        gap: 1rem;
+    }
+
+    .portfolio-form,
+    .portfolio-summary {
+        padding: 0.75rem;
+    }
+
+    .form-input {
+        padding: 0.5rem;
+        font-size: 13px;
+        margin-bottom: 0.5rem;
+    }
+
+    .portfolio-stats {
+        gap: 0.5rem;
+    }
+
+    .portfolio-stat {
+        padding: 0.5rem;
+    }
+
+    .portfolio-item {
+        padding: 0.75rem;
+    }
+
+    .portfolio-item-name {
+        font-size: 0.95rem;
+    }
+
+    .portfolio-item-details {
+        gap: 0.5rem;
+    }
+
+    .portfolio-item-detail {
+        padding: 0.5rem;
+    }
+
+    /* 对比分析 */
+    .comparison-controls {
+        gap: 0.5rem;
+    }
+
+    .comparison-input {
+        padding: 0.5rem;
+        font-size: 13px;
+    }
+
+    .comparison-container {
+        gap: 0.75rem;
+    }
+
+    .comparison-card {
+        padding: 0.75rem;
+    }
+
+    .comparison-metrics {
+        gap: 0.5rem;
+    }
+
+    .metric-item {
+        padding: 0.5rem;
+    }
+
+    .metric-label {
+        font-size: 0.8rem;
+    }
+
+    .metric-value {
+        font-size: 0.9rem;
+    }
+
+    .comparison-table {
+        font-size: 0.75rem;
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+        padding: 0.4rem;
+    }
+
+    /* 图表 */
+    .chart-controls {
+        gap: 0.5rem;
+    }
+
+    .chart-input,
+    .chart-select {
+        padding: 0.5rem;
+        font-size: 13px;
+    }
+
+    .chart-container {
+        padding: 0.75rem;
+        height: 250px;
+    }
+
+    /* 新闻 */
+    .news-filters {
+        gap: 0.4rem;
+    }
+
+    .news-filter-btn {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.8rem;
+    }
+
+    .news-item {
+        padding: 0.75rem;
+    }
+
+    .news-item-title {
+        font-size: 0.95rem;
+    }
+
+    .news-item-description {
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .news-item-source {
+        font-size: 0.75rem;
+        padding: 0.3rem 0.6rem;
+    }
+
+    .news-item-link {
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+    }
+
+    /* 关于卡片 */
+    .about-card {
+        padding: 1rem;
+    }
+
+    .about-card i {
+        font-size: 1.75rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .about-card h3 {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .about-card p {
+        font-size: 0.85rem;
+    }
+
+    /* 页脚 */
+    .footer {
+        padding: 1.5rem 0.75rem;
+    }
+
+    .footer-content p {
+        font-size: 0.85rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .social-links {
+        gap: 0.75rem;
+        margin-top: 1rem;
+    }
+
+    .social-links a {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
     }
 }
