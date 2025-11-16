@@ -8,24 +8,24 @@
 }
 
 :root {
-    --primary-color: #3b82f6;
-    --secondary-color: #60a5fa;
+    --primary-color: #6366f1;
+    --secondary-color: #0ea5e9;
     --success-color: #10b981;
     --danger-color: #ef4444;
     --warning-color: #f59e0b;
-    --dark-bg: #f5f7fa;
-    --card-bg: #ffffff;
-    --text-primary: #222;
-    --text-secondary: #555;
-    --border-color: #e5e7eb;
-    --shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
-    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.12);
+    --dark-bg: #18181b;
+    --card-bg: #232336;
+    --text-primary: #f3f4f6;
+    --text-secondary: #a1a1aa;
+    --border-color: #2a2a3c;
+    --shadow: 0 4px 16px rgba(0,0,0,0.25);
+    --shadow-lg: 0 10px 32px rgba(0,0,0,0.35);
 }
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #f5f7fa 0%, #e2e8f0 100%);
-    color: #222;
+    background: linear-gradient(135deg, #18181b 0%, #232336 100%);
+    color: var(--text-primary);
     line-height: 1.6;
     overflow-x: hidden;
 }
@@ -38,7 +38,7 @@ html {
    导航栏
    ============================================ */
 .navbar {
-    background: rgba(255,255,255,0.95);
+    background: rgba(30,32,48,0.98);
     border-bottom: 1px solid var(--border-color);
     box-shadow: var(--shadow);
     position: sticky;
@@ -565,7 +565,7 @@ html {
 }
 
 .about-card {
-    background: linear-gradient(135deg, #e0e7ff 0%, #f1f5f9 100%);
+    background: linear-gradient(135deg, #232336 0%, #18181b 100%);
     border: 1px solid var(--border-color);
     color: var(--text-primary);
     padding: 2rem;
@@ -599,7 +599,7 @@ html {
    页脚
    ============================================ */
 .footer {
-    background: linear-gradient(135deg, #f5f7fa 0%, #e2e8f0 100%);
+    background: linear-gradient(135deg, #18181b 0%, #232336 100%);
     border-top: 1px solid var(--border-color);
     color: var(--text-secondary);
     padding: 3rem 2rem;
