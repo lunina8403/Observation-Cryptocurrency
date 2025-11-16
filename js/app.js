@@ -104,6 +104,12 @@ function setupEventListeners() {
             });
         });
     }
+
+    // 导出按钮
+    const exportBtn = document.getElementById('exportBtn');
+    if (exportBtn) {
+        exportBtn.addEventListener('click', exportToCSV);
+    }
 }
 
 // ============================================
@@ -662,8 +668,189 @@ window.addEventListener('beforeunload', () => {
 });
 
 // ============================================
-// 浏览器通知权限请求
+// 数据导出功能
 // ============================================
-if ('Notification' in window && Notification.permission === 'default') {
-    Notification.requestPermission();
+function exportToCSV() {
+    if (appState.filteredData.length === 0) {
+        alert('没有数据可导出');
+        return;
+    }
+
+    // 构建 CSV 标题行
+    const headers = ['排名', '名称', '代码', '价格(USD)', '24h涨跌(%)', '7d涨跌(%)', '市值', '24h交易量', '最高价', '最低价'];
+    
+    // 构建数据行
+    const rows = appState.filteredData.map((crypto, index) => [
+        index + 1,
+        crypto.name,
+        crypto.symbol.toUpperCase(),
+        crypto.current_price,
+        (crypto.price_change_percentage_24h || 0).toFixed(2),
+        (crypto.price_change_percentage_7d || 0).toFixed(2),
+        crypto.market_cap || 'N/A',
+        crypto.total_volume || 'N/A',
+        crypto.high_24h || 'N/A',
+        crypto.low_24h || 'N/A'
+    ]);
+
+    // 生成 CSV 内容
+    const csvContent = [
+        headers.join(','),
+        ...rows.map(row => row.map(cell => {
+            if (typeof cell === 'string' && cell.includes(',')) {
+                return `"${cell}"`;
+            }
+            return cell;
+        }).join(','))
+    ].join('\n');
+
+    // 创建 Blob 并下载
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', `cryptocurrency_data_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// ============================================
+// 投资组合管理
+// ============================================
+function addPortfolioItem() {
+    const cryptoInput = document.getElementById('portfolioCrypto');
+    const amountInput = document.getElementById('portfolioAmount');
+    const buyPriceInput = document.getElementById('portfolioBuyPrice');
+
+    const crypto = cryptoInput.value.trim().toLowerCase();
+    const amount = parseFloat(amountInput.value);
+    const buyPrice = parseFloat(buyPriceInput.value);
+
+    if (!crypto || isNaN(amount) || isNaN(buyPrice) || amount <= 0 || buyPrice <= 0) {
+        alert('请填写完整且有效的数据');
+        return;
+    }
+
+    // 查找币种
+    const cryptoData = appState.cryptoData.find(c => 
+        c.name.toLowerCase() === crypto || c.symbol.toLowerCase() === crypto
+    );
+
+    if (!cryptoData) {
+        alert('未找到该币种，请输入正确的币种名称或代码');
+        return;
+    }
+
+    const item = {
+        id: cryptoData.id,
+        name: cryptoData.name,
+        symbol: cryptoData.symbol,
+        amount: amount,
+        buyPrice: buyPrice,
+        currentPrice: cryptoData.current_price
+    };
+
+    appState.portfolio.push(item);
+    localStorage.setItem('portfolio', JSON.stringify(appState.portfolio));
+
+    cryptoInput.value = '';
+    amountInput.value = '';
+    buyPriceInput.value = '';
+
+    displayPortfolio();
+    updatePortfolioStats();
+}
+
+function removePortfolioItem(index) {
+    if (confirm('确定要删除该持仓吗？')) {
+        appState.portfolio.splice(index, 1);
+        localStorage.setItem('portfolio', JSON.stringify(appState.portfolio));
+        displayPortfolio();
+        updatePortfolioStats();
+    }
+}
+
+function displayPortfolio() {
+    const portfolioList = document.getElementById('portfolioList');
+    if (!portfolioList) return;
+
+    if (appState.portfolio.length === 0) {
+        portfolioList.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--text-secondary);">暂无持仓</div>';
+        return;
+    }
+
+    portfolioList.innerHTML = appState.portfolio.map((item, index) => {
+        const gainLoss = (item.currentPrice - item.buyPrice) * item.amount;
+        const gainLossPercent = ((item.currentPrice - item.buyPrice) / item.buyPrice * 100).toFixed(2);
+        const currentValue = item.currentPrice * item.amount;
+        const isProfit = gainLoss >= 0;
+
+        return `
+            <div class="portfolio-item">
+                <div class="portfolio-item-header">
+                    <span class="portfolio-item-name">${item.name} (${item.symbol.toUpperCase()})</span>
+                    <button class="portfolio-item-delete" onclick="removePortfolioItem(${index})">×</button>
+                </div>
+                <div class="portfolio-item-details">
+                    <div class="portfolio-item-detail">
+                        <div class="portfolio-item-detail-label">持仓数量</div>
+                        <div class="portfolio-item-detail-value">${item.amount.toFixed(8)}</div>
+                    </div>
+                    <div class="portfolio-item-detail">
+                        <div class="portfolio-item-detail-label">买入价格</div>
+                        <div class="portfolio-item-detail-value">$${item.buyPrice.toFixed(2)}</div>
+                    </div>
+                    <div class="portfolio-item-detail">
+                        <div class="portfolio-item-detail-label">当前价格</div>
+                        <div class="portfolio-item-detail-value">$${item.currentPrice.toFixed(2)}</div>
+                    </div>
+                    <div class="portfolio-item-detail">
+                        <div class="portfolio-item-detail-label">当前价值</div>
+                        <div class="portfolio-item-detail-value">$${currentValue.toFixed(2)}</div>
+                    </div>
+                    <div class="portfolio-item-detail" style="grid-column: 1 / -1;">
+                        <div class="portfolio-item-detail-label">收益/亏损</div>
+                        <div class="portfolio-item-detail-value" style="color: ${isProfit ? 'var(--success-color)' : 'var(--danger-color)'};">
+                            ${isProfit ? '+' : ''}$${gainLoss.toFixed(2)} (${gainLossPercent}%)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function updatePortfolioStats() {
+    // 更新 portfolio 中的当前价格
+    appState.portfolio.forEach(item => {
+        const cryptoData = appState.cryptoData.find(c => c.id === item.id);
+        if (cryptoData) {
+            item.currentPrice = cryptoData.current_price;
+        }
+    });
+
+    const totalInvested = appState.portfolio.reduce((sum, item) => sum + (item.buyPrice * item.amount), 0);
+    const currentValue = appState.portfolio.reduce((sum, item) => sum + (item.currentPrice * item.amount), 0);
+    const gainLoss = currentValue - totalInvested;
+    const gainLossPercent = totalInvested === 0 ? 0 : ((gainLoss / totalInvested) * 100).toFixed(2);
+
+    const totalInvestedEl = document.getElementById('totalInvested');
+    const currentValueEl = document.getElementById('currentValue');
+    const gainLossEl = document.getElementById('gainLoss');
+    const gainLossPercentEl = document.getElementById('gainLossPercent');
+
+    if (totalInvestedEl) totalInvestedEl.textContent = formatCurrency(totalInvested);
+    if (currentValueEl) currentValueEl.textContent = formatCurrency(currentValue);
+    if (gainLossEl) {
+        gainLossEl.textContent = formatCurrency(gainLoss);
+        gainLossEl.style.color = gainLoss >= 0 ? 'var(--success-color)' : 'var(--danger-color)';
+    }
+    if (gainLossPercentEl) {
+        gainLossPercentEl.textContent = (gainLoss >= 0 ? '+' : '') + gainLossPercent + '%';
+        gainLossPercentEl.style.color = gainLoss >= 0 ? 'var(--success-color)' : 'var(--danger-color)';
+    }
 }
