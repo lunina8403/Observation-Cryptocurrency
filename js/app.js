@@ -707,3 +707,45 @@ function drawMarketPoints(ctx, x, y, radius, rotation) {
         }
     });
 }
+
+// ============================================
+// Three.js 半球地球背景渲染
+// ============================================
+function renderGlobeBackground() {
+    const container = document.getElementById('globe-bg');
+    if (!container) return;
+    container.innerHTML = '';
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, container.offsetWidth / container.offsetHeight, 0.1, 1000);
+    camera.position.z = 2.5;
+    camera.position.y = 0.5;
+
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    renderer.setSize(container.offsetWidth, container.offsetHeight);
+    renderer.setClearColor(0x000000, 0);
+    container.appendChild(renderer.domElement);
+
+    // 半球体（只显示正面）
+    const geometry = new THREE.SphereGeometry(1, 64, 64, 0, Math.PI);
+    const texture = new THREE.TextureLoader().load('assets/earth-map.jpg');
+    const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true, opacity: 0.95 });
+    const sphere = new THREE.Mesh(geometry, material);
+    scene.add(sphere);
+
+    function onResize() {
+        renderer.setSize(container.offsetWidth, container.offsetHeight);
+        camera.aspect = container.offsetWidth / container.offsetHeight;
+        camera.updateProjectionMatrix();
+    }
+    window.addEventListener('resize', onResize);
+
+    function animate() {
+        sphere.rotation.y += 0.003;
+        renderer.render(scene, camera);
+        requestAnimationFrame(animate);
+    }
+    animate();
+}
+
+window.addEventListener('DOMContentLoaded', renderGlobeBackground);
