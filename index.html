@@ -333,6 +333,134 @@
         </section>
     </main>
 
+    <!-- 币种详情模态框 -->
+    <div id="cryptoDetailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <img id="detailCryptoImage" class="detail-crypto-image" src="" alt="">
+                    <div>
+                        <h2 id="detailCryptoName"></h2>
+                        <p id="detailCryptoSymbol"></p>
+                    </div>
+                </div>
+                <button class="modal-close" onclick="closeDetailModal()">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <!-- 价格信息 -->
+                <div class="detail-section">
+                    <h3>💰 价格信息</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <span class="label">当前价格</span>
+                            <span id="detailPrice" class="value price-highlight">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">24小时涨跌</span>
+                            <span id="detail24hChange" class="value">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">7天涨跌</span>
+                            <span id="detail7dChange" class="value">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">30天涨跌</span>
+                            <span id="detail30dChange" class="value">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 市场数据 -->
+                <div class="detail-section">
+                    <h3>📊 市场数据</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <span class="label">市值排名</span>
+                            <span id="detailRank" class="value">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">市值</span>
+                            <span id="detailMarketCap" class="value">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">24小时成交量</span>
+                            <span id="detailVolume" class="value">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">流通市值占比</span>
+                            <span id="detailMarketCapPercentage" class="value">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 价格范围 -->
+                <div class="detail-section">
+                    <h3>📈 价格范围</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <span class="label">24小时最高价</span>
+                            <span id="detailHigh24h" class="value">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">24小时最低价</span>
+                            <span id="detailLow24h" class="value">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">历史最高价</span>
+                            <span id="detailAth" class="value">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">历史最低价</span>
+                            <span id="detailAtl" class="value">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 额外信息 -->
+                <div class="detail-section">
+                    <h3>ℹ️ 额外信息</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <span class="label">流通供应量</span>
+                            <span id="detailCirculatingSupply" class="value">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">总供应量</span>
+                            <span id="detailTotalSupply" class="value">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">最大供应量</span>
+                            <span id="detailMaxSupply" class="value">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 描述信息 -->
+                <div class="detail-section">
+                    <h3>📝 项目描述</h3>
+                    <p id="detailDescription" class="detail-description"></p>
+                </div>
+
+                <!-- 官方链接 -->
+                <div class="detail-section">
+                    <h3>🔗 官方链接</h3>
+                    <div id="detailLinks" class="detail-links"></div>
+                </div>
+
+                <!-- 操作按钮 -->
+                <div class="detail-section">
+                    <div class="detail-actions">
+                        <button class="btn btn-primary" onclick="toggleDetailFavorite()">⭐ 添加收藏</button>
+                        <button class="btn btn-secondary" onclick="showDetailAlert()">🔔 设置预警</button>
+                        <button class="btn btn-secondary" onclick="addDetailToPortfolio()">💼 添加到组合</button>
+                        <button class="btn btn-secondary" onclick="closeDetailModal()">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- 页脚 -->
     <footer class="footer">
         <div class="footer-content">
