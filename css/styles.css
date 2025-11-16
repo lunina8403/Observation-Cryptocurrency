@@ -8,24 +8,24 @@
 }
 
 :root {
-    --primary-color: #6366f1;
-    --secondary-color: #8b5cf6;
+    --primary-color: #3b82f6;
+    --secondary-color: #60a5fa;
     --success-color: #10b981;
     --danger-color: #ef4444;
     --warning-color: #f59e0b;
-    --dark-bg: #0f172a;
-    --card-bg: #1e293b;
-    --text-primary: #f1f5f9;
-    --text-secondary: #cbd5e1;
-    --border-color: #334155;
-    --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.4);
+    --dark-bg: #f5f7fa;
+    --card-bg: #ffffff;
+    --text-primary: #222;
+    --text-secondary: #555;
+    --border-color: #e5e7eb;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.12);
 }
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, var(--dark-bg) 0%, #1a2332 100%);
-    color: var(--text-primary);
+    background: linear-gradient(135deg, #f5f7fa 0%, #e2e8f0 100%);
+    color: #222;
     line-height: 1.6;
     overflow-x: hidden;
 }
@@ -38,13 +38,12 @@ html {
    导航栏
    ============================================ */
 .navbar {
-    background: rgba(15, 23, 42, 0.95);
-    backdrop-filter: blur(10px);
+    background: rgba(255,255,255,0.95);
     border-bottom: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
     position: sticky;
     top: 0;
     z-index: 1000;
-    box-shadow: var(--shadow);
 }
 
 .navbar-container {
@@ -122,32 +121,20 @@ html {
    英雄区域
    ============================================ */
 .hero {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 4rem 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 3rem;
-    min-height: 60vh;
     position: relative;
     overflow: hidden;
+    background: none;
 }
 
-.hero-background {
+#globe-bg {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    opacity: 0.15;
     z-index: 0;
-}
-
-#globeCanvas {
-    display: block;
-    width: 100%;
-    height: 100%;
+    pointer-events: none;
+    opacity: 0.25;
 }
 
 .hero-content {
@@ -260,10 +247,10 @@ html {
 
 .stat-card {
     background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
     padding: 1.5rem;
     border-radius: 12px;
-    border: 1px solid var(--border-color);
-    text-align: center;
     transition: all 0.3s ease;
     cursor: pointer;
 }
@@ -323,8 +310,9 @@ html {
     margin-bottom: 0.5rem;
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    -webkit-text-fill-color: initial;
     background-clip: text;
+    color: var(--primary-color);
 }
 
 .section-header p {
@@ -379,7 +367,7 @@ html {
 .crypto-card {
     background: var(--card-bg);
     border: 1px solid var(--border-color);
-    border-radius: 12px;
+    color: var(--text-primary);
     padding: 1.5rem;
     transition: all 0.3s ease;
     cursor: pointer;
@@ -517,7 +505,7 @@ html {
 .analysis-card {
     background: var(--card-bg);
     border: 1px solid var(--border-color);
-    border-radius: 12px;
+    color: var(--text-primary);
     padding: 2rem;
     transition: all 0.3s ease;
 }
@@ -573,9 +561,9 @@ html {
 }
 
 .about-card {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+    background: linear-gradient(135deg, #e0e7ff 0%, #f1f5f9 100%);
     border: 1px solid var(--border-color);
-    border-radius: 12px;
+    color: var(--text-primary);
     padding: 2rem;
     text-align: center;
     transition: all 0.3s ease;
@@ -607,8 +595,9 @@ html {
    页脚
    ============================================ */
 .footer {
-    background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(26, 35, 50, 0.95) 100%);
+    background: linear-gradient(135deg, #f5f7fa 0%, #e2e8f0 100%);
     border-top: 1px solid var(--border-color);
+    color: var(--text-secondary);
     padding: 3rem 2rem;
     margin-top: 3rem;
 }
