@@ -32,6 +32,12 @@
                     <a href="#comparison" class="nav-link">对比分析</a>
                 </li>
                 <li class="nav-item">
+                    <a href="#charts" class="nav-link">价格图表</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#news" class="nav-link">行业新闻</a>
+                </li>
+                <li class="nav-item">
                     <a href="#about" class="nav-link">关于</a>
                 </li>
             </ul>
@@ -210,6 +216,46 @@
             </div>
 
             <div id="comparisonContainer" class="comparison-container"></div>
+        </section>
+
+        <!-- 价格图表区域 -->
+        <section class="charts-section" id="charts">
+            <div class="section-header">
+                <h2>价格走势分析</h2>
+                <p>查看加密货币历史价格走势</p>
+            </div>
+
+            <div class="chart-controls">
+                <input type="text" id="chartCryptoInput" placeholder="选择币种" list="chartCryptoList" class="chart-input">
+                <datalist id="chartCryptoList"></datalist>
+                <select id="chartPeriodSelect" class="chart-select">
+                    <option value="7">7日走势</option>
+                    <option value="30">30日走势</option>
+                    <option value="365">1年走势</option>
+                </select>
+                <button class="btn btn-primary" onclick="loadPriceChart()">查看图表</button>
+            </div>
+
+            <div id="chartContainer" class="chart-container">
+                <canvas id="priceChart"></canvas>
+            </div>
+        </section>
+
+        <!-- 行业新闻区域 -->
+        <section class="news-section" id="news">
+            <div class="section-header">
+                <h2>行业动态</h2>
+                <p>最新加密货币市场资讯</p>
+            </div>
+
+            <div class="news-filters">
+                <button class="news-filter-btn active" onclick="filterNews('all')">全部</button>
+                <button class="news-filter-btn" onclick="filterNews('bitcoin')">比特币</button>
+                <button class="news-filter-btn" onclick="filterNews('ethereum')">以太坊</button>
+                <button class="news-filter-btn" onclick="filterNews('defi')">DeFi</button>
+            </div>
+
+            <div id="newsFeed" class="news-feed"></div>
         </section>
 
         <!-- 关于区域 -->
