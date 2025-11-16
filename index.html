@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>加密货币观测 - Cryptocurrency Observer</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <i class="fas fa-chart-line"></i>
+                <span>加密货币观测</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#home" class="nav-link active">首页</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#overview" class="nav-link">概览</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#analysis" class="nav-link">分析</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#about" class="nav-link">关于</a>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主容器 -->
+    <main class="main-container">
+        <!-- 英雄区域 -->
+        <section class="hero" id="home">
+            <div class="hero-content">
+                <h1 class="hero-title">加密货币市场观测平台</h1>
+                <p class="hero-subtitle">实时监测全球加密货币市场动态，掌握投资机会</p>
+                <button class="btn btn-primary" onclick="scrollToSection('overview')">开始观测</button>
+            </div>
+            <div class="hero-image">
+                <i class="fas fa-chart-pie"></i>
+            </div>
+        </section>
+
+        <!-- 统计信息区域 -->
+        <section class="stats-section">
+            <div class="stats-container">
+                <div class="stat-card">
+                    <h3>市场总值</h3>
+                    <p class="stat-value" id="marketCap">--</p>
+                    <p class="stat-label">USD</p>
+                </div>
+                <div class="stat-card">
+                    <h3>24小时交易量</h3>
+                    <p class="stat-value" id="volume24h">--</p>
+                    <p class="stat-label">USD</p>
+                </div>
+                <div class="stat-card">
+                    <h3>比特币占比</h3>
+                    <p class="stat-value" id="btcDominance">--</p>
+                    <p class="stat-label">%</p>
+                </div>
+                <div class="stat-card">
+                    <h3>上市币种数</h3>
+                    <p class="stat-value" id="activeCrypto">--</p>
+                    <p class="stat-label">个</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 概览区域 -->
+        <section class="overview-section" id="overview">
+            <div class="section-header">
+                <h2>主流加密货币实时行情</h2>
+                <p>监测全球市场领先的加密货币</p>
+            </div>
+            
+            <div class="filter-controls">
+                <input type="text" id="searchInput" class="search-box" placeholder="搜索加密货币...">
+                <select id="sortSelect" class="sort-select">
+                    <option value="market_cap">按市值排序</option>
+                    <option value="price">按价格排序</option>
+                    <option value="change_24h">按涨跌幅排序</option>
+                </select>
+                <button id="refreshBtn" class="btn btn-secondary">
+                    <i class="fas fa-sync-alt"></i> 刷新
+                </button>
+            </div>
+
+            <div class="crypto-grid" id="cryptoGrid">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i> 加载中...
+                </div>
+            </div>
+        </section>
+
+        <!-- 分析区域 -->
+        <section class="analysis-section" id="analysis">
+            <div class="section-header">
+                <h2>市场分析</h2>
+                <p>深入了解市场趋势和动向</p>
+            </div>
+
+            <div class="analysis-grid">
+                <div class="analysis-card">
+                    <h3>市场概况</h3>
+                    <div id="marketOverview" class="analysis-content">
+                        <p>加载市场数据中...</p>
+                    </div>
+                </div>
+                <div class="analysis-card">
+                    <h3>价格波动分析</h3>
+                    <div id="volatilityAnalysis" class="analysis-content">
+                        <p>分析数据加载中...</p>
+                    </div>
+                </div>
+                <div class="analysis-card">
+                    <h3>赚钱榜（24h）</h3>
+                    <div id="topGainers" class="analysis-content">
+                        <p>加载中...</p>
+                    </div>
+                </div>
+                <div class="analysis-card">
+                    <h3>亏损榜（24h）</h3>
+                    <div id="topLosers" class="analysis-content">
+                        <p>加载中...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 关于区域 -->
+        <section class="about-section" id="about">
+            <div class="section-header">
+                <h2>关于本平台</h2>
+                <p>了解我们的使命和功能</p>
+            </div>
+
+            <div class="about-content">
+                <div class="about-card">
+                    <i class="fas fa-rocket"></i>
+                    <h3>实时数据</h3>
+                    <p>使用 CoinGecko API 获取实时的加密货币数据，确保信息准确无误。</p>
+                </div>
+                <div class="about-card">
+                    <i class="fas fa-chart-bar"></i>
+                    <h3>市场分析</h3>
+                    <p>提供详细的市场分析和趋势预测，帮助投资者做出明智决策。</p>
+                </div>
+                <div class="about-card">
+                    <i class="fas fa-mobile-alt"></i>
+                    <h3>响应式设计</h3>
+                    <p>完美适配各类设备，随时随地观测加密货币市场动态。</p>
+                </div>
+                <div class="about-card">
+                    <i class="fas fa-lock"></i>
+                    <h3>安全可靠</h3>
+                    <p>采用安全的数据加密技术，保护用户信息隐私。</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2024 加密货币观测平台. 版权所有。</p>
+            <p>数据来源: <a href="https://www.coingecko.com" target="_blank">CoinGecko</a></p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 加载 Chart.js 库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <!-- 加载自定义脚本 -->
+    <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+{
+  "name": "observation-cryptocurrency",
+  "version": "1.0.0",
+  "description": "A professional cryptocurrency market observation platform with real-time data",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "dev": "http-server -p 8000"
+  },
+  "keywords": [
+    "cryptocurrency",
+    "bitcoin",
+    "ethereum",
+    "blockchain",
+    "market",
+    "crypto",
+    "observer",
+    "realtime"
+  ],
+  "author": "lunina8403",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lunina8403/Observation-Cryptocurrency.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lunina8403/Observation-Cryptocurrency/issues"
+  },
+  "homepage": "https://github.com/lunina8403/Observation-Cryptocurrency",
+  "devDependencies": {
+    "http-server": "^14.1.0"
+  }
+}

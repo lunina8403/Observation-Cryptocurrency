@@ -1,0 +1,22 @@
+# 依赖项
+node_modules/
+package-lock.json
+yarn.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# 日志
+*.log
+npm-debug.log*
+
+# 临时文件
+.tmp/
+temp/
+dist/
+build/
