@@ -29,6 +29,9 @@
                     <a href="#portfolio" class="nav-link">投资组合</a>
                 </li>
                 <li class="nav-item">
+                    <a href="#comparison" class="nav-link">对比分析</a>
+                </li>
+                <li class="nav-item">
                     <a href="#about" class="nav-link">关于</a>
                 </li>
             </ul>
@@ -185,6 +188,28 @@
                 </div>
             </div>
             <div id="portfolioList" class="portfolio-list"></div>
+        </section>
+
+        <!-- 币种对比分析区域 -->
+        <section class="comparison-section" id="comparison">
+            <div class="section-header">
+                <h2>币种对比分析</h2>
+                <p>对比多个币种的关键指标</p>
+            </div>
+
+            <div class="comparison-controls">
+                <input type="text" id="comparisonInput1" placeholder="选择币种1" list="cryptoList1" class="comparison-input">
+                <datalist id="cryptoList1"></datalist>
+                <button class="btn btn-secondary" onclick="addComparisonCrypto(1)">添加</button>
+
+                <input type="text" id="comparisonInput2" placeholder="选择币种2" list="cryptoList2" class="comparison-input">
+                <datalist id="cryptoList2"></datalist>
+                <button class="btn btn-secondary" onclick="addComparisonCrypto(2)">添加</button>
+
+                <button class="btn btn-primary" onclick="clearComparison()">清空对比</button>
+            </div>
+
+            <div id="comparisonContainer" class="comparison-container"></div>
         </section>
 
         <!-- 关于区域 -->

@@ -854,3 +854,209 @@ function updatePortfolioStats() {
         gainLossPercentEl.style.color = gainLoss >= 0 ? 'var(--success-color)' : 'var(--danger-color)';
     }
 }
+
+// ============================================
+// 币种对比分析
+// ============================================
+let comparisonCryptos = [];
+
+function addComparisonCrypto(slot) {
+    const input = document.getElementById(`comparisonInput${slot}`);
+    const cryptoName = input.value.trim().toLowerCase();
+    
+    if (!cryptoName) {
+        alert('请输入币种名称或代码');
+        return;
+    }
+
+    const cryptoData = appState.cryptoData.find(c => 
+        c.name.toLowerCase() === cryptoName || c.symbol.toLowerCase() === cryptoName
+    );
+
+    if (!cryptoData) {
+        alert('未找到该币种');
+        return;
+    }
+
+    // 检查是否已添加
+    if (comparisonCryptos.some(c => c.id === cryptoData.id)) {
+        alert('该币种已添加到对比');
+        return;
+    }
+
+    comparisonCryptos.push(cryptoData);
+    input.value = '';
+    
+    displayComparison();
+}
+
+function removeComparisonCrypto(id) {
+    comparisonCryptos = comparisonCryptos.filter(c => c.id !== id);
+    displayComparison();
+}
+
+function clearComparison() {
+    comparisonCryptos = [];
+    document.getElementById('comparisonContainer').innerHTML = '';
+}
+
+function displayComparison() {
+    const container = document.getElementById('comparisonContainer');
+    
+    if (comparisonCryptos.length === 0) {
+        container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--text-secondary);">暂无对比数据，请选择币种对比</div>';
+        return;
+    }
+
+    // 显示对比卡片
+    const cardsHTML = comparisonCryptos.map(crypto => {
+        const indicators = calculateTechnicalIndicators(crypto);
+        return `
+            <div class="comparison-card">
+                <div class="comparison-card-header">
+                    <span class="comparison-card-title">${crypto.name}</span>
+                    <button class="comparison-card-remove" onclick="removeComparisonCrypto('${crypto.id}')">×</button>
+                </div>
+                <div class="comparison-metrics">
+                    <div class="metric-item">
+                        <span class="metric-label">价格</span>
+                        <span class="metric-value">$${crypto.current_price.toFixed(2)}</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">市值</span>
+                        <span class="metric-value">${formatCurrency(crypto.market_cap || 0)}</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">24h涨跌</span>
+                        <span class="metric-value" style="color: ${(crypto.price_change_percentage_24h || 0) >= 0 ? 'var(--success-color)' : 'var(--danger-color)'};">
+                            ${((crypto.price_change_percentage_24h || 0) >= 0 ? '+' : '')}${(crypto.price_change_percentage_24h || 0).toFixed(2)}%
+                        </span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">7d涨跌</span>
+                        <span class="metric-value" style="color: ${(crypto.price_change_percentage_7d || 0) >= 0 ? 'var(--success-color)' : 'var(--danger-color)'};">
+                            ${((crypto.price_change_percentage_7d || 0) >= 0 ? '+' : '')}${(crypto.price_change_percentage_7d || 0).toFixed(2)}%
+                        </span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">24h交易量</span>
+                        <span class="metric-value">${formatCurrency(crypto.total_volume || 0)}</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">RSI(14)</span>
+                        <span class="metric-value">${indicators.rsi.toFixed(2)}</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">波动率</span>
+                        <span class="metric-value">${indicators.volatility.toFixed(2)}%</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    container.innerHTML = cardsHTML;
+
+    // 显示对比表格
+    if (comparisonCryptos.length > 1) {
+        const tableHTML = createComparisonTable();
+        container.innerHTML += tableHTML;
+    }
+}
+
+function createComparisonTable() {
+    let html = `<table class="comparison-table" style="grid-column: 1/-1;">
+        <thead>
+            <tr>
+                <th>指标</th>`;
+    
+    comparisonCryptos.forEach(crypto => {
+        html += `<th>${crypto.symbol.toUpperCase()}</th>`;
+    });
+    
+    html += `</tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>价格 (USD)</td>`;
+    
+    comparisonCryptos.forEach(crypto => {
+        html += `<td>$${crypto.current_price.toFixed(2)}</td>`;
+    });
+    
+    html += `</tr>
+            <tr>
+                <td>市值</td>`;
+    
+    comparisonCryptos.forEach(crypto => {
+        html += `<td>${formatCurrency(crypto.market_cap || 0)}</td>`;
+    });
+    
+    html += `</tr>
+            <tr>
+                <td>24h涨跌</td>`;
+    
+    comparisonCryptos.forEach(crypto => {
+        const change = (crypto.price_change_percentage_24h || 0).toFixed(2);
+        const color = change >= 0 ? 'var(--success-color)' : 'var(--danger-color)';
+        html += `<td style="color: ${color};">${change >= 0 ? '+' : ''}${change}%</td>`;
+    });
+    
+    html += `</tr>
+            <tr>
+                <td>7d涨跌</td>`;
+    
+    comparisonCryptos.forEach(crypto => {
+        const change = (crypto.price_change_percentage_7d || 0).toFixed(2);
+        const color = change >= 0 ? 'var(--success-color)' : 'var(--danger-color)';
+        html += `<td style="color: ${color};">${change >= 0 ? '+' : ''}${change}%</td>`;
+    });
+    
+    html += `</tr>
+        </tbody>
+    </table>`;
+    
+    return html;
+}
+
+// ============================================
+// 技术指标计算
+// ============================================
+function calculateTechnicalIndicators(crypto) {
+    // RSI(14) - 简化计算，基于 24h 价格变化
+    const rsi = calculateRSI(crypto);
+    
+    // 波动率 - 基于价格变化百分比
+    const volatility = Math.abs(crypto.price_change_percentage_24h || 0);
+    
+    // 强度指标
+    const strength = calculateStrength(crypto);
+    
+    return {
+        rsi,
+        volatility,
+        strength
+    };
+}
+
+function calculateRSI(crypto) {
+    // 简化的 RSI 计算：基于价格涨跌
+    const change24h = crypto.price_change_percentage_24h || 0;
+    const change7d = crypto.price_change_percentage_7d || 0;
+    const changeAvg = (Math.abs(change24h) + Math.abs(change7d)) / 2;
+    
+    // 将价格变化转换为 RSI 值 (0-100)
+    let rsi = 50 + (change24h * 5); // 基准 50，变化幅度影响
+    rsi = Math.max(0, Math.min(100, rsi));
+    
+    return rsi;
+}
+
+function calculateStrength(crypto) {
+    // 市场强度指标：基于价格、交易量、市值
+    const priceStrength = crypto.current_price > 0 ? Math.log(crypto.current_price) : 0;
+    const volumeStrength = crypto.total_volume ? Math.log(crypto.total_volume) : 0;
+    const mcStrength = crypto.market_cap ? Math.log(crypto.market_cap) : 0;
+    
+    return ((priceStrength + volumeStrength + mcStrength) / 3).toFixed(2);
+}
