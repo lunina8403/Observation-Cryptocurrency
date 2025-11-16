@@ -267,7 +267,7 @@ function displayCryptoCards() {
         const isFavorite = appState.favorites.includes(crypto.id);
 
         return `
-            <div class="crypto-card">
+            <div class="crypto-card" onclick="openDetailModal('${crypto.id}')" style="cursor: pointer;">
                 <div class="crypto-header">
                     <div>
                         <div class="crypto-name">${crypto.name}</div>
@@ -1619,4 +1619,148 @@ async function updateRealtimePrice(crypto, interval) {
     } catch (error) {
         console.error('更新实时价格失败:', error);
     }
+}
+
+// ============================================
+// 币种详情页面功能
+// ============================================
+let currentDetailCrypto = null;
+
+function openDetailModal(cryptoId) {
+    // 查找币种
+    const crypto = appState.cryptoData.find(c => c.id === cryptoId);
+    if (!crypto) {
+        alert('未找到该币种');
+        return;
+    }
+
+    currentDetailCrypto = crypto;
+    const modal = document.getElementById('cryptoDetailModal');
+    
+    // 填充基础信息
+    document.getElementById('detailCryptoName').textContent = crypto.name;
+    document.getElementById('detailCryptoSymbol').textContent = `#${crypto.market_cap_rank || 'N/A'} · ${crypto.symbol.toUpperCase()}`;
+    document.getElementById('detailCryptoImage').src = crypto.image || '';
+
+    // 价格信息
+    document.getElementById('detailPrice').textContent = `$${formatNumber(crypto.current_price)}`;
+    document.getElementById('detail24hChange').innerHTML = `<span class="${(crypto.price_change_percentage_24h || 0) >= 0 ? 'positive' : 'negative'} value">${(crypto.price_change_percentage_24h || 0) >= 0 ? '↑' : '↓'} ${Math.abs(crypto.price_change_percentage_24h || 0).toFixed(2)}%</span>`;
+    document.getElementById('detail7dChange').innerHTML = `<span class="${(crypto.price_change_percentage_7d || 0) >= 0 ? 'positive' : 'negative'} value">${(crypto.price_change_percentage_7d || 0) >= 0 ? '↑' : '↓'} ${Math.abs(crypto.price_change_percentage_7d || 0).toFixed(2)}%</span>`;
+    
+    const change30d = crypto.price_change_percentage_30d || 0;
+    document.getElementById('detail30dChange').innerHTML = `<span class="${change30d >= 0 ? 'positive' : 'negative'} value">${change30d >= 0 ? '↑' : '↓'} ${Math.abs(change30d).toFixed(2)}%</span>`;
+
+    // 市场数据
+    document.getElementById('detailRank').textContent = `#${crypto.market_cap_rank || 'N/A'}`;
+    document.getElementById('detailMarketCap').textContent = formatCurrency(crypto.market_cap || 0);
+    document.getElementById('detailVolume').textContent = formatCurrency(crypto.total_volume || 0);
+    
+    const marketCapPercentage = crypto.market_cap_percentage ? crypto.market_cap_percentage.toFixed(2) : 'N/A';
+    document.getElementById('detailMarketCapPercentage').textContent = `${marketCapPercentage}%`;
+
+    // 价格范围
+    document.getElementById('detailHigh24h').textContent = `$${formatNumber(crypto.high_24h || 0)}`;
+    document.getElementById('detailLow24h').textContent = `$${formatNumber(crypto.low_24h || 0)}`;
+    document.getElementById('detailAth').textContent = `$${formatNumber(crypto.ath || 0)}`;
+    document.getElementById('detailAtl').textContent = `$${formatNumber(crypto.atl || 0)}`;
+
+    // 供应量
+    document.getElementById('detailCirculatingSupply').textContent = crypto.circulating_supply ? formatNumber(crypto.circulating_supply) + ' ' + crypto.symbol.toUpperCase() : 'N/A';
+    document.getElementById('detailTotalSupply').textContent = crypto.total_supply ? formatNumber(crypto.total_supply) + ' ' + crypto.symbol.toUpperCase() : 'N/A';
+    document.getElementById('detailMaxSupply').textContent = crypto.max_supply ? formatNumber(crypto.max_supply) + ' ' + crypto.symbol.toUpperCase() : '无限制';
+
+    // 描述（可选）
+    document.getElementById('detailDescription').textContent = '加密货币详细信息加载中...';
+    
+    // 获取完整信息
+    fetchDetailedCryptoInfo(cryptoId);
+
+    // 显示模态框
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeDetailModal() {
+    const modal = document.getElementById('cryptoDetailModal');
+    modal.classList.remove('active');
+    document.body.style.overflow = 'auto';
+    currentDetailCrypto = null;
+}
+
+async function fetchDetailedCryptoInfo(cryptoId) {
+    try {
+        const response = await fetch(
+            `${API_CONFIG.baseUrl}/coins/${cryptoId}?localization=false&market_data=false&community_data=false`
+        );
+        const data = await response.json();
+
+        // 更新描述
+        const description = data.description?.zh || data.description?.en || '暂无描述';
+        const descriptionText = description.replace(/<[^>]*>/g, '').substring(0, 500);
+        document.getElementById('detailDescription').textContent = descriptionText || '暂无描述';
+
+        // 更新链接
+        const linksContainer = document.getElementById('detailLinks');
+        const links = [];
+        
+        if (data.links?.homepage?.[0]) links.push({ name: '官网', url: data.links.homepage[0] });
+        if (data.links?.explorer?.[0]) links.push({ name: '浏览器', url: data.links.explorer[0] });
+        if (data.links?.source_code?.[0]) links.push({ name: '代码', url: data.links.source_code[0] });
+        if (data.links?.whitepaper) links.push({ name: '白皮书', url: data.links.whitepaper });
+        if (data.links?.twitter_screen_name) links.push({ name: 'Twitter', url: `https://twitter.com/${data.links.twitter_screen_name}` });
+        if (data.links?.github_repos?.[0]) links.push({ name: 'GitHub', url: data.links.github_repos[0] });
+
+        linksContainer.innerHTML = links.map(link => 
+            `<a href="${link.url}" target="_blank" rel="noopener noreferrer">🔗 ${link.name}</a>`
+        ).join('');
+
+        if (links.length === 0) {
+            linksContainer.innerHTML = '<p style="color: var(--text-secondary);">暂无官方链接</p>';
+        }
+    } catch (error) {
+        console.error('获取详细信息失败:', error);
+        document.getElementById('detailDescription').textContent = '获取详细信息失败';
+    }
+}
+
+function toggleDetailFavorite() {
+    if (!currentDetailCrypto) return;
+    toggleFavorite(currentDetailCrypto.id, { stopPropagation: () => {} });
+    alert('收藏成功');
+}
+
+function showDetailAlert() {
+    if (!currentDetailCrypto) return;
+    showAlertForm(currentDetailCrypto.id, currentDetailCrypto.name, { stopPropagation: () => {} });
+    closeDetailModal();
+}
+
+function addDetailToPortfolio() {
+    if (!currentDetailCrypto) return;
+    
+    const quantity = prompt(`请输入 ${currentDetailCrypto.name} 的数量:`);
+    if (quantity === null || quantity === '') return;
+
+    const qty = parseFloat(quantity);
+    if (isNaN(qty) || qty <= 0) {
+        alert('请输入有效的数量');
+        return;
+    }
+
+    const portfolioItem = {
+        id: Date.now(),
+        cryptoId: currentDetailCrypto.id,
+        name: currentDetailCrypto.name,
+        symbol: currentDetailCrypto.symbol.toUpperCase(),
+        quantity: qty,
+        buyPrice: currentDetailCrypto.current_price,
+        timestamp: new Date().toISOString()
+    };
+
+    appState.portfolio.push(portfolioItem);
+    localStorage.setItem('portfolio', JSON.stringify(appState.portfolio));
+    displayPortfolio();
+    updatePortfolioStats();
+    alert(`已添加 ${qty} ${currentDetailCrypto.symbol.toUpperCase()} 到投资组合`);
+    closeDetailModal();
 }
