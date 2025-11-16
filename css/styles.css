@@ -22,6 +22,17 @@
     --shadow-lg: 0 10px 32px rgba(0,0,0,0.35);
 }
 
+/* 浅色主题 */
+body.light-theme {
+    --dark-bg: #f5f7fa;
+    --card-bg: #ffffff;
+    --text-primary: #222;
+    --text-secondary: #555;
+    --border-color: #e5e7eb;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: linear-gradient(135deg, #18181b 0%, #232336 100%);
@@ -115,6 +126,25 @@ html {
     background: var(--primary-color);
     border-radius: 2px;
     transition: all 0.3s ease;
+}
+
+/* 主题切换按钮 */
+.theme-toggle {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--primary-color);
+    transition: all 0.3s ease;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.theme-toggle:hover {
+    transform: rotate(20deg);
+    color: var(--secondary-color);
 }
 
 /* ============================================
@@ -410,6 +440,36 @@ html {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
+}
+
+.crypto-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.favorite-btn,
+.alert-btn {
+    background: none;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 0.4rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.favorite-btn:hover,
+.alert-btn:hover {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+    transform: scale(1.05);
+}
+
+.favorite-btn.active {
+    color: #fbbf24;
+    border-color: #fbbf24;
 }
 
 .crypto-name {
