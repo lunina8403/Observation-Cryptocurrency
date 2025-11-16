@@ -1207,7 +1207,7 @@ function displayDemoNews() {
             title: '比特币突破新高',
             description: '比特币价格今日创下历史新高，市场情绪乐观。',
             source: { title: 'CryptoNews' },
-            url: '#',
+            url: 'https://www.coindesk.com/markets/',
             created_at: new Date().toISOString(),
             category: 'bitcoin'
         },
@@ -1215,7 +1215,7 @@ function displayDemoNews() {
             title: '以太坊升级进展',
             description: '以太坊第二层扩容方案取得重大进展，性能提升显著。',
             source: { title: 'Ethereum Blog' },
-            url: '#',
+            url: 'https://ethereum.org/en/blog/',
             created_at: new Date(Date.now() - 3600000).toISOString(),
             category: 'ethereum'
         },
@@ -1223,7 +1223,7 @@ function displayDemoNews() {
             title: 'DeFi 生态发展',
             description: 'DeFi 协议总锁定价值(TVL)超过 1000 亿美元，创新应用不断涌现。',
             source: { title: 'DeFi Pulse' },
-            url: '#',
+            url: 'https://defipulse.com/',
             created_at: new Date(Date.now() - 7200000).toISOString(),
             category: 'defi'
         }
@@ -1255,6 +1255,7 @@ function displayNews() {
     newsFeed.innerHTML = filteredNews.slice(0, 10).map(news => {
         const date = new Date(news.created_at);
         const timeAgo = getTimeAgo(date);
+        const newsUrl = news.url && news.url !== '#' ? news.url : 'https://cryptopanic.com/';
         
         return `
             <div class="news-item">
@@ -1268,7 +1269,7 @@ function displayNews() {
                 <div>
                     <span class="news-item-source">${news.source?.title || 'News'}</span>
                 </div>
-                <a href="${news.url}" target="_blank" class="news-item-link">阅读全文 →</a>
+                <a href="${newsUrl}" target="_blank" rel="noopener noreferrer" class="news-item-link">阅读全文 →</a>
             </div>
         `;
     }).join('');
