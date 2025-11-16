@@ -26,6 +26,9 @@
                     <a href="#analysis" class="nav-link">分析</a>
                 </li>
                 <li class="nav-item">
+                    <a href="#portfolio" class="nav-link">投资组合</a>
+                </li>
+                <li class="nav-item">
                     <a href="#about" class="nav-link">关于</a>
                 </li>
             </ul>
@@ -97,6 +100,9 @@
                 <button id="refreshBtn" class="btn btn-secondary">
                     <i class="fas fa-sync-alt"></i> 刷新
                 </button>
+                <button id="exportBtn" class="btn btn-secondary">
+                    <i class="fas fa-download"></i> 导出
+                </button>
             </div>
 
             <div class="crypto-grid" id="cryptoGrid">
@@ -139,6 +145,46 @@
                     </div>
                 </div>
             </div>
+        </section>
+
+        <!-- 投资组合区域 -->
+        <section class="portfolio-section" id="portfolio">
+            <div class="section-header">
+                <h2>我的投资组合</h2>
+                <p>管理和追踪您的加密货币投资</p>
+            </div>
+            <div class="portfolio-container">
+                <div class="portfolio-form">
+                    <h3>添加持仓</h3>
+                    <input type="text" id="portfolioCrypto" placeholder="币种名称或代码" list="cryptoList" class="form-input">
+                    <datalist id="cryptoList"></datalist>
+                    <input type="number" id="portfolioAmount" placeholder="持仓数量" step="0.00000001" class="form-input">
+                    <input type="number" id="portfolioBuyPrice" placeholder="买入价格" step="0.01" class="form-input">
+                    <button class="btn btn-primary" onclick="addPortfolioItem()">添加</button>
+                </div>
+                <div class="portfolio-summary">
+                    <h3>投资组合概览</h3>
+                    <div id="portfolioStats" class="portfolio-stats">
+                        <div class="portfolio-stat">
+                            <span>总投资额</span>
+                            <span id="totalInvested">$0</span>
+                        </div>
+                        <div class="portfolio-stat">
+                            <span>当前价值</span>
+                            <span id="currentValue">$0</span>
+                        </div>
+                        <div class="portfolio-stat">
+                            <span>收益/亏损</span>
+                            <span id="gainLoss">$0</span>
+                        </div>
+                        <div class="portfolio-stat">
+                            <span>收益率</span>
+                            <span id="gainLossPercent">0%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="portfolioList" class="portfolio-list"></div>
         </section>
 
         <!-- 关于区域 -->
