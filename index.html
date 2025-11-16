@@ -35,6 +35,12 @@
                     <a href="#charts" class="nav-link">价格图表</a>
                 </li>
                 <li class="nav-item">
+                    <a href="#prediction" class="nav-link">AI预测</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#realtime" class="nav-link">实时推送</a>
+                </li>
+                <li class="nav-item">
                     <a href="#news" class="nav-link">行业新闻</a>
                 </li>
                 <li class="nav-item">
@@ -204,12 +210,12 @@
             </div>
 
             <div class="comparison-controls">
-                <input type="text" id="comparisonInput1" placeholder="选择币种1" list="cryptoList1" class="comparison-input">
-                <datalist id="cryptoList1"></datalist>
+                <input type="text" id="comparisonInput1" placeholder="选择币种1" list="comparisonCryptoList1" class="comparison-input">
+                <datalist id="comparisonCryptoList1"></datalist>
                 <button class="btn btn-secondary" onclick="addComparisonCrypto(1)">添加</button>
 
-                <input type="text" id="comparisonInput2" placeholder="选择币种2" list="cryptoList2" class="comparison-input">
-                <datalist id="cryptoList2"></datalist>
+                <input type="text" id="comparisonInput2" placeholder="选择币种2" list="comparisonCryptoList2" class="comparison-input">
+                <datalist id="comparisonCryptoList2"></datalist>
                 <button class="btn btn-secondary" onclick="addComparisonCrypto(2)">添加</button>
 
                 <button class="btn btn-primary" onclick="clearComparison()">清空对比</button>
@@ -238,6 +244,43 @@
 
             <div id="chartContainer" class="chart-container">
                 <canvas id="priceChart"></canvas>
+            </div>
+        </section>
+
+        <!-- AI 市场预测区域 -->
+        <section class="prediction-section" id="prediction">
+            <div class="section-header">
+                <h2>AI 市场预测</h2>
+                <p>基于技术分析和历史数据的价格预测</p>
+            </div>
+
+            <div class="prediction-controls">
+                <input type="text" id="predictionCryptoInput" placeholder="选择币种" list="predictionCryptoList" class="prediction-input">
+                <datalist id="predictionCryptoList"></datalist>
+                <button class="btn btn-primary" onclick="generatePrediction()">生成预测</button>
+            </div>
+
+            <div id="predictionContainer" class="prediction-container">
+                <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">选择币种并点击"生成预测"</div>
+            </div>
+        </section>
+
+        <!-- 实时价格推送区域 -->
+        <section class="realtime-section" id="realtime">
+            <div class="section-header">
+                <h2>实时价格推送</h2>
+                <p>WebSocket 实时价格数据流</p>
+            </div>
+
+            <div class="realtime-controls">
+                <input type="text" id="realtimeCryptoInput" placeholder="选择币种" list="realtimeCryptoList" class="realtime-input">
+                <datalist id="realtimeCryptoList"></datalist>
+                <button class="btn btn-primary" id="connectBtn" onclick="toggleRealtimeConnection()">连接实时数据</button>
+                <span id="connectionStatus" class="connection-status disconnected">● 未连接</span>
+            </div>
+
+            <div id="realtimeContainer" class="realtime-container">
+                <div id="realtimePrices" class="realtime-prices"></div>
             </div>
         </section>
 

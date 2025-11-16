@@ -948,6 +948,252 @@ html {
 }
 
 /* ============================================
+   AI 市场预测区域
+   ============================================ */
+.prediction-section {
+    padding: 4rem 2rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.prediction-controls {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.prediction-input {
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--card-bg);
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    min-width: 250px;
+    transition: all 0.3s ease;
+}
+
+.prediction-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.prediction-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+}
+
+.prediction-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.prediction-card:hover {
+    border-color: var(--primary-color);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-5px);
+}
+
+.prediction-header {
+    margin-bottom: 1.5rem;
+}
+
+.prediction-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.prediction-info {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.prediction-metrics {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.metric {
+    background: rgba(99, 102, 241, 0.05);
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 3px solid var(--primary-color);
+}
+
+.metric-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.metric-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-top: 0.25rem;
+}
+
+.metric-trend {
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+.metric-trend.positive {
+    color: #10b981;
+}
+
+.metric-trend.negative {
+    color: #ef4444;
+}
+
+.prediction-chart {
+    width: 100%;
+    height: 250px;
+    background: rgba(99, 102, 241, 0.05);
+    border-radius: 8px;
+    margin-top: 1rem;
+}
+
+/* ============================================
+   实时价格推送区域
+   ============================================ */
+.realtime-section {
+    padding: 4rem 2rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.realtime-controls {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.realtime-input {
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--card-bg);
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    min-width: 250px;
+    transition: all 0.3s ease;
+}
+
+.realtime-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.connection-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    background: var(--card-bg);
+}
+
+.connection-status.connected {
+    color: #10b981;
+    background: rgba(16, 185, 129, 0.1);
+}
+
+.connection-status.disconnected {
+    color: var(--text-secondary);
+}
+
+.realtime-container {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2rem;
+    min-height: 300px;
+}
+
+.realtime-prices {
+    display: grid;
+    gap: 1rem;
+}
+
+.realtime-price-item {
+    background: rgba(99, 102, 241, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+    align-items: center;
+}
+
+.price-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.price-icon {
+    font-size: 1.5rem;
+}
+
+.price-details h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.price-details p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.price-current {
+    text-align: center;
+}
+
+.price-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.price-change {
+    font-size: 0.9rem;
+    margin-top: 0.25rem;
+}
+
+.price-change.up {
+    color: #10b981;
+}
+
+.price-change.down {
+    color: #ef4444;
+}
+
+.price-timestamp {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-align: right;
+}
+
+/* ============================================
    新闻区域
    ============================================ */
 .news-section {
@@ -1408,6 +1654,41 @@ html {
         height: 300px;
     }
 
+    /* AI 预测区域 */
+    .prediction-controls {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .prediction-input {
+        width: 100%;
+        min-width: unset;
+        font-size: 14px;
+        padding: 0.6rem 0.8rem;
+    }
+
+    .prediction-container {
+        grid-template-columns: 1fr;
+    }
+
+    /* 实时推送区域 */
+    .realtime-controls {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .realtime-input {
+        width: 100%;
+        min-width: unset;
+        font-size: 14px;
+        padding: 0.6rem 0.8rem;
+    }
+
+    .realtime-price-item {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
     /* 新闻区域 */
     .news-filters {
         gap: 0.5rem;
@@ -1708,6 +1989,52 @@ html {
     .chart-container {
         padding: 0.75rem;
         height: 250px;
+    }
+
+    /* AI 预测 */
+    .prediction-controls {
+        gap: 0.5rem;
+    }
+
+    .prediction-input {
+        padding: 0.5rem;
+        font-size: 13px;
+    }
+
+    .prediction-container {
+        grid-template-columns: 1fr;
+    }
+
+    .prediction-card {
+        padding: 1rem;
+    }
+
+    .prediction-chart {
+        height: 200px;
+    }
+
+    /* 实时推送 */
+    .realtime-controls {
+        gap: 0.5rem;
+    }
+
+    .realtime-input {
+        padding: 0.5rem;
+        font-size: 13px;
+    }
+
+    .realtime-price-item {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+        padding: 0.75rem;
+    }
+
+    .price-value {
+        font-size: 1.25rem;
+    }
+
+    .price-timestamp {
+        text-align: left;
     }
 
     /* 新闻 */
