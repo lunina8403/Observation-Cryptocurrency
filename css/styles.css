@@ -130,11 +130,31 @@ html {
     justify-content: space-between;
     gap: 3rem;
     min-height: 60vh;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.15;
+    z-index: 0;
+}
+
+#globeCanvas {
+    display: block;
+    width: 100%;
+    height: 100%;
 }
 
 .hero-content {
     flex: 1;
     animation: slideInLeft 0.8s ease;
+    position: relative;
+    z-index: 2;
 }
 
 .hero-title {
@@ -196,6 +216,8 @@ html {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
+    z-index: 2;
 }
 
 @keyframes slideInLeft {
