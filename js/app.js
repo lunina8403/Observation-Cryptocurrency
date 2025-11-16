@@ -716,17 +716,20 @@ function renderGlobeBackground() {
     if (!container) return;
     container.innerHTML = '';
 
+    // 设置默认尺寸，防止为0
+    const width = container.offsetWidth || container.clientWidth || 600;
+    const height = container.offsetHeight || container.clientHeight || 400;
+
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, container.offsetWidth / container.offsetHeight, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
     camera.position.z = 2.5;
     camera.position.y = 0.5;
 
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setSize(container.offsetWidth, container.offsetHeight);
+    renderer.setSize(width, height);
     renderer.setClearColor(0x000000, 0);
     container.appendChild(renderer.domElement);
 
-    // 半球体（只显示正面）
     const geometry = new THREE.SphereGeometry(1, 64, 64, 0, Math.PI);
     const texture = new THREE.TextureLoader().load('assets/earth-map.jpg');
     const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true, opacity: 0.95 });
@@ -734,8 +737,10 @@ function renderGlobeBackground() {
     scene.add(sphere);
 
     function onResize() {
-        renderer.setSize(container.offsetWidth, container.offsetHeight);
-        camera.aspect = container.offsetWidth / container.offsetHeight;
+        const w = container.offsetWidth || container.clientWidth || 600;
+        const h = container.offsetHeight || container.clientHeight || 400;
+        renderer.setSize(w, h);
+        camera.aspect = w / h;
         camera.updateProjectionMatrix();
     }
     window.addEventListener('resize', onResize);

@@ -123,18 +123,22 @@ html {
 .hero {
     position: relative;
     overflow: hidden;
-    background: none;
+    min-height: 400px;
 }
 
 #globe-bg {
     position: absolute;
     top: 0;
     left: 0;
+    right: 0;
+    bottom: 0;
     width: 100%;
     height: 100%;
     z-index: 0;
     pointer-events: none;
-    opacity: 0.25;
+    opacity: 0.28;
+    min-width: 300px;
+    min-height: 300px;
 }
 
 .hero-content {
