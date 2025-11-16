@@ -14,19 +14,54 @@ let appState = {
     filteredData: [],
     sortBy: 'market_cap',
     searchQuery: '',
-    autoRefreshInterval: null
+    autoRefreshInterval: null,
+    favorites: JSON.parse(localStorage.getItem('favorites') || '[]'),
+    alerts: JSON.parse(localStorage.getItem('alerts') || '{}'),
+    portfolio: JSON.parse(localStorage.getItem('portfolio') || '[]')
 };
 
 // ============================================
 // 初始化函数
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('[应用初始化中...');
+    console.log('应用初始化中...');
+    initTheme();
     setupEventListeners();
-    renderGlobeBackground();
     loadCryptoData();
     setupAutoRefresh();
 });
+
+// ============================================
+// 主题切换函数
+// ============================================
+function initTheme() {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const savedTheme = localStorage.getItem('theme') || (prefersDark ? 'dark' : 'light');
+    
+    if (savedTheme === 'light') {
+        document.body.classList.add('light-theme');
+    }
+    
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', toggleTheme);
+        updateThemeIcon(savedTheme);
+    }
+}
+
+function toggleTheme() {
+    const isLight = document.body.classList.toggle('light-theme');
+    const theme = isLight ? 'light' : 'dark';
+    localStorage.setItem('theme', theme);
+    updateThemeIcon(theme);
+}
+
+function updateThemeIcon(theme) {
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        themeToggle.innerHTML = theme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    }
+}
 
 // ============================================
 // 事件监听器设置
@@ -159,6 +194,7 @@ async function loadCryptoData() {
             appState.filteredData = [...cryptoData];
             displayCryptoCards();
             analyzeMarket(topMovers);
+            checkAlerts();
         }
     } catch (error) {
         console.error('加载数据错误:', error);
@@ -215,6 +251,7 @@ function displayCryptoCards() {
         const priceChange = crypto.price_change_percentage_24h || 0;
         const isPositive = priceChange >= 0;
         const changeIcon = isPositive ? '📈' : '📉';
+        const isFavorite = appState.favorites.includes(crypto.id);
 
         return `
             <div class="crypto-card">
@@ -224,6 +261,15 @@ function displayCryptoCards() {
                         <div class="crypto-symbol">${crypto.symbol?.toUpperCase()}</div>
                     </div>
                     <div class="crypto-rank">#${crypto.market_cap_rank || 'N/A'}</div>
+                </div>
+                
+                <div class="crypto-actions">
+                    <button class="favorite-btn ${isFavorite ? 'active' : ''}" onclick="toggleFavorite('${crypto.id}', event)" title="收藏">
+                        <i class="fas fa-star"></i>
+                    </button>
+                    <button class="alert-btn" onclick="showAlertForm('${crypto.id}', '${crypto.name}', event)" title="设置预警">
+                        <i class="fas fa-bell"></i>
+                    </button>
                 </div>
                 
                 <div class="crypto-price">
@@ -274,6 +320,65 @@ function displayCryptoCards() {
             </div>
         `;
     }).join('');
+}
+
+// ============================================
+// 收藏功能
+// ============================================
+function toggleFavorite(cryptoId, event) {
+    event.stopPropagation();
+    const index = appState.favorites.indexOf(cryptoId);
+    if (index > -1) {
+        appState.favorites.splice(index, 1);
+    } else {
+        appState.favorites.push(cryptoId);
+    }
+    localStorage.setItem('favorites', JSON.stringify(appState.favorites));
+    displayCryptoCards();
+}
+
+// ============================================
+// 预警功能
+// ============================================
+function showAlertForm(cryptoId, cryptoName, event) {
+    event.stopPropagation();
+    const price = prompt(`为 ${cryptoName} 设置价格预警（美元）:`, '');
+    if (price !== null && price !== '') {
+        if (!appState.alerts[cryptoId]) {
+            appState.alerts[cryptoId] = [];
+        }
+        appState.alerts[cryptoId].push({
+            price: parseFloat(price),
+            name: cryptoName,
+            createdAt: new Date().toLocaleString()
+        });
+        localStorage.setItem('alerts', JSON.stringify(appState.alerts));
+        alert(`已为 ${cryptoName} 设置 $${price} 的价格预警`);
+    }
+}
+
+function checkAlerts() {
+    appState.cryptoData.forEach(crypto => {
+        if (appState.alerts[crypto.id]) {
+            appState.alerts[crypto.id].forEach((alert, idx) => {
+                if (crypto.current_price >= alert.price) {
+                    notifyAlert(alert.name, alert.price, crypto.current_price);
+                    appState.alerts[crypto.id].splice(idx, 1);
+                }
+            });
+        }
+    });
+    localStorage.setItem('alerts', JSON.stringify(appState.alerts));
+}
+
+function notifyAlert(name, targetPrice, currentPrice) {
+    const message = `${name} 已达到预警价格！目标: $${targetPrice}, 当前: $${currentPrice.toFixed(2)}`;
+    console.log(message);
+    if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification('加密货币预警', { body: message });
+    } else {
+        alert(message);
+    }
 }
 
 // ============================================
@@ -557,200 +662,8 @@ window.addEventListener('beforeunload', () => {
 });
 
 // ============================================
-// 地球背景绘制
+// 浏览器通知权限请求
 // ============================================
-
-/**
- * 绘制旋转的地球背景
- */
-function drawGlobe() {
-    const canvas = document.getElementById('globeCanvas');
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    
-    // 设置 Canvas 尺寸
-    function resizeCanvas() {
-        canvas.width = canvas.offsetWidth;
-        canvas.height = canvas.offsetHeight;
-    }
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-
-    let rotation = 0;
-
-    function animate() {
-        // 清空画布
-        ctx.fillStyle = 'rgba(15, 23, 42, 0)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        // 获取画布中心
-        const centerX = canvas.width / 2;
-        const centerY = canvas.height / 2;
-        const radius = Math.min(canvas.width, canvas.height) / 3;
-
-        // 绘制地球
-        drawEarthGlobe(ctx, centerX, centerY, radius, rotation);
-
-        // 更新旋转角度
-        rotation += 0.001;
-        requestAnimationFrame(animate);
-    }
-
-    animate();
+if ('Notification' in window && Notification.permission === 'default') {
+    Notification.requestPermission();
 }
-
-/**
- * 绘制地球球体
- */
-function drawEarthGlobe(ctx, x, y, radius, rotation) {
-    // 绘制地球阴影
-    const gradient = ctx.createRadialGradient(x - radius * 0.3, y - radius * 0.3, 0, x, y, radius);
-    gradient.addColorStop(0, '#6366f1');
-    gradient.addColorStop(0.5, '#4f46e5');
-    gradient.addColorStop(1, '#3730a3');
-    
-    ctx.fillStyle = gradient;
-    ctx.beginPath();
-    ctx.arc(x, y, radius, 0, Math.PI * 2);
-    ctx.fill();
-
-    // 绘制地球纹理（网格）
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-    ctx.lineWidth = 1;
-
-    // 经度线
-    for (let i = 0; i < 12; i++) {
-        const angle = (i / 12) * Math.PI * 2 + rotation;
-        const x1 = x + Math.cos(angle) * radius;
-        const y1 = y + Math.sin(angle) * radius;
-        const x2 = x + Math.cos(angle + Math.PI) * radius;
-        const y2 = y + Math.sin(angle + Math.PI) * radius;
-
-        ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
-        ctx.stroke();
-    }
-
-    // 纬度线
-    for (let i = 1; i < 6; i++) {
-        const latRadius = radius * Math.sin((i / 6) * Math.PI);
-        const offsetY = radius * Math.cos((i / 6) * Math.PI);
-
-        ctx.beginPath();
-        ctx.arc(x, y + offsetY, latRadius, 0, Math.PI * 2);
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.arc(x, y - offsetY, latRadius, 0, Math.PI * 2);
-        ctx.stroke();
-    }
-
-    // 绘制闪烁的数据点（代表全球市场）
-    drawMarketPoints(ctx, x, y, radius, rotation);
-
-    // 绘制地球表面光晕
-    const glowGradient = ctx.createRadialGradient(x, y, radius * 0.8, x, y, radius);
-    glowGradient.addColorStop(0, 'rgba(99, 102, 241, 0.2)');
-    glowGradient.addColorStop(1, 'rgba(99, 102, 241, 0)');
-    
-    ctx.fillStyle = glowGradient;
-    ctx.beginPath();
-    ctx.arc(x, y, radius, 0, Math.PI * 2);
-    ctx.fill();
-}
-
-/**
- * 绘制全球市场数据点
- */
-function drawMarketPoints(ctx, x, y, radius, rotation) {
-    const points = [
-        { lat: 40, lon: -74, label: '美国' },    // 纽约
-        { lat: 51.5, lon: 0, label: '英国' },    // 伦敦
-        { lat: 35.7, lon: 139.7, label: '日本' }, // 东京
-        { lat: 22.3, lon: 114.2, label: '香港' }, // 香港
-        { lat: 31.23, lon: 121.47, label: '中国' } // 上海
-    ];
-
-    points.forEach((point, index) => {
-        // 将地理坐标转换为画布坐标
-        const lon = (point.lon * Math.PI / 180) + rotation;
-        const lat = point.lat * Math.PI / 180;
-
-        const px = x + radius * Math.cos(lon) * Math.cos(lat);
-        const py = y + radius * Math.sin(lat);
-
-        // 仅绘制可见的点（面向观察者的一侧）
-        if (Math.cos(lon - rotation) > 0) {
-            // 根据深度改变大小和亮度
-            const depth = (Math.cos(lon - rotation) + 1) / 2;
-            const size = 3 + depth * 2;
-            const opacity = 0.3 + depth * 0.7;
-
-            // 绘制光点
-            const pointGradient = ctx.createRadialGradient(px, py, 0, px, py, size);
-            pointGradient.addColorStop(0, `rgba(16, 185, 129, ${opacity})`);
-            pointGradient.addColorStop(1, `rgba(16, 185, 129, 0)`);
-
-            ctx.fillStyle = pointGradient;
-            ctx.beginPath();
-            ctx.arc(px, py, size, 0, Math.PI * 2);
-            ctx.fill();
-
-            // 绘制脉冲效果
-            ctx.strokeStyle = `rgba(16, 185, 129, ${opacity * 0.5})`;
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.arc(px, py, size + 2, 0, Math.PI * 2);
-            ctx.stroke();
-        }
-    });
-}
-
-// ============================================
-// Three.js 半球地球背景渲染
-// ============================================
-function renderGlobeBackground() {
-    const container = document.getElementById('globe-bg');
-    if (!container) return;
-    container.innerHTML = '';
-
-    // 设置默认尺寸，防止为0
-    const width = container.offsetWidth || container.clientWidth || 600;
-    const height = container.offsetHeight || container.clientHeight || 400;
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-    camera.position.z = 2.5;
-    camera.position.y = 0.5;
-
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setSize(width, height);
-    renderer.setClearColor(0x000000, 0);
-    container.appendChild(renderer.domElement);
-
-    const geometry = new THREE.SphereGeometry(1, 64, 64, 0, Math.PI);
-    const texture = new THREE.TextureLoader().load('assets/earth-map.jpg');
-    const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true, opacity: 0.95 });
-    const sphere = new THREE.Mesh(geometry, material);
-    scene.add(sphere);
-
-    function onResize() {
-        const w = container.offsetWidth || container.clientWidth || 600;
-        const h = container.offsetHeight || container.clientHeight || 400;
-        renderer.setSize(w, h);
-        camera.aspect = w / h;
-        camera.updateProjectionMatrix();
-    }
-    window.addEventListener('resize', onResize);
-
-    function animate() {
-        sphere.rotation.y += 0.003;
-        renderer.render(scene, camera);
-        requestAnimationFrame(animate);
-    }
-    animate();
-}
-
-window.addEventListener('DOMContentLoaded', renderGlobeBackground);
