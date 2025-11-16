@@ -23,6 +23,7 @@ let appState = {
 document.addEventListener('DOMContentLoaded', () => {
     console.log('应用初始化中...');
     setupEventListeners();
+    drawGlobe();
     loadCryptoData();
     setupAutoRefresh();
 });
@@ -554,3 +555,155 @@ function showErrorMessage(message) {
 window.addEventListener('beforeunload', () => {
     stopAutoRefresh();
 });
+
+// ============================================
+// 地球背景绘制
+// ============================================
+
+/**
+ * 绘制旋转的地球背景
+ */
+function drawGlobe() {
+    const canvas = document.getElementById('globeCanvas');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    
+    // 设置 Canvas 尺寸
+    function resizeCanvas() {
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    let rotation = 0;
+
+    function animate() {
+        // 清空画布
+        ctx.fillStyle = 'rgba(15, 23, 42, 0)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // 获取画布中心
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const radius = Math.min(canvas.width, canvas.height) / 3;
+
+        // 绘制地球
+        drawEarthGlobe(ctx, centerX, centerY, radius, rotation);
+
+        // 更新旋转角度
+        rotation += 0.001;
+        requestAnimationFrame(animate);
+    }
+
+    animate();
+}
+
+/**
+ * 绘制地球球体
+ */
+function drawEarthGlobe(ctx, x, y, radius, rotation) {
+    // 绘制地球阴影
+    const gradient = ctx.createRadialGradient(x - radius * 0.3, y - radius * 0.3, 0, x, y, radius);
+    gradient.addColorStop(0, '#6366f1');
+    gradient.addColorStop(0.5, '#4f46e5');
+    gradient.addColorStop(1, '#3730a3');
+    
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 绘制地球纹理（网格）
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+    ctx.lineWidth = 1;
+
+    // 经度线
+    for (let i = 0; i < 12; i++) {
+        const angle = (i / 12) * Math.PI * 2 + rotation;
+        const x1 = x + Math.cos(angle) * radius;
+        const y1 = y + Math.sin(angle) * radius;
+        const x2 = x + Math.cos(angle + Math.PI) * radius;
+        const y2 = y + Math.sin(angle + Math.PI) * radius;
+
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+    }
+
+    // 纬度线
+    for (let i = 1; i < 6; i++) {
+        const latRadius = radius * Math.sin((i / 6) * Math.PI);
+        const offsetY = radius * Math.cos((i / 6) * Math.PI);
+
+        ctx.beginPath();
+        ctx.arc(x, y + offsetY, latRadius, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(x, y - offsetY, latRadius, 0, Math.PI * 2);
+        ctx.stroke();
+    }
+
+    // 绘制闪烁的数据点（代表全球市场）
+    drawMarketPoints(ctx, x, y, radius, rotation);
+
+    // 绘制地球表面光晕
+    const glowGradient = ctx.createRadialGradient(x, y, radius * 0.8, x, y, radius);
+    glowGradient.addColorStop(0, 'rgba(99, 102, 241, 0.2)');
+    glowGradient.addColorStop(1, 'rgba(99, 102, 241, 0)');
+    
+    ctx.fillStyle = glowGradient;
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.fill();
+}
+
+/**
+ * 绘制全球市场数据点
+ */
+function drawMarketPoints(ctx, x, y, radius, rotation) {
+    const points = [
+        { lat: 40, lon: -74, label: '美国' },    // 纽约
+        { lat: 51.5, lon: 0, label: '英国' },    // 伦敦
+        { lat: 35.7, lon: 139.7, label: '日本' }, // 东京
+        { lat: 22.3, lon: 114.2, label: '香港' }, // 香港
+        { lat: 31.23, lon: 121.47, label: '中国' } // 上海
+    ];
+
+    points.forEach((point, index) => {
+        // 将地理坐标转换为画布坐标
+        const lon = (point.lon * Math.PI / 180) + rotation;
+        const lat = point.lat * Math.PI / 180;
+
+        const px = x + radius * Math.cos(lon) * Math.cos(lat);
+        const py = y + radius * Math.sin(lat);
+
+        // 仅绘制可见的点（面向观察者的一侧）
+        if (Math.cos(lon - rotation) > 0) {
+            // 根据深度改变大小和亮度
+            const depth = (Math.cos(lon - rotation) + 1) / 2;
+            const size = 3 + depth * 2;
+            const opacity = 0.3 + depth * 0.7;
+
+            // 绘制光点
+            const pointGradient = ctx.createRadialGradient(px, py, 0, px, py, size);
+            pointGradient.addColorStop(0, `rgba(16, 185, 129, ${opacity})`);
+            pointGradient.addColorStop(1, `rgba(16, 185, 129, 0)`);
+
+            ctx.fillStyle = pointGradient;
+            ctx.beginPath();
+            ctx.arc(px, py, size, 0, Math.PI * 2);
+            ctx.fill();
+
+            // 绘制脉冲效果
+            ctx.strokeStyle = `rgba(16, 185, 129, ${opacity * 0.5})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.arc(px, py, size + 2, 0, Math.PI * 2);
+            ctx.stroke();
+        }
+    });
+}
