@@ -102,8 +102,7 @@ async function fetchCryptoData() {
             `&order=market_cap_desc` +
             `&per_page=50` +
             `&page=1` +
-            `&sparkline=false` +
-            `&locale=zh-CN`
+            `&sparkline=false`
         );
         if (!response.ok) throw new Error('获取加密货币数据失败');
         const data = await response.json();
