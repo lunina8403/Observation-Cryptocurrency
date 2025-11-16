@@ -21,9 +21,9 @@ let appState = {
 // 初始化函数
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('应用初始化中...');
+    console.log('[应用初始化中...');
     setupEventListeners();
-    drawGlobe();
+    renderGlobeBackground();
     loadCryptoData();
     setupAutoRefresh();
 });
