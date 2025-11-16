@@ -23,12 +23,19 @@ let appState = {
 // ============================================
 // 初始化函数
 // ============================================
+// 初始化函数
+// ============================================
 document.addEventListener('DOMContentLoaded', () => {
     console.log('应用初始化中...');
     initTheme();
     setupEventListeners();
     loadCryptoData();
     setupAutoRefresh();
+    loadNews();
+    setTimeout(() => {
+        displayPortfolio();
+        updatePortfolioStats();
+    }, 1000);
 });
 
 // ============================================
@@ -1059,4 +1066,232 @@ function calculateStrength(crypto) {
     const mcStrength = crypto.market_cap ? Math.log(crypto.market_cap) : 0;
     
     return ((priceStrength + volumeStrength + mcStrength) / 3).toFixed(2);
+}
+
+// ============================================
+// 历史价格图表
+// ============================================
+let priceChart = null;
+
+async function loadPriceChart() {
+    const cryptoInput = document.getElementById('chartCryptoInput');
+    const periodSelect = document.getElementById('chartPeriodSelect');
+    
+    const cryptoName = cryptoInput.value.trim().toLowerCase();
+    const days = periodSelect.value;
+
+    if (!cryptoName) {
+        alert('请选择币种');
+        return;
+    }
+
+    const cryptoData = appState.cryptoData.find(c => 
+        c.name.toLowerCase() === cryptoName || c.symbol.toLowerCase() === cryptoName
+    );
+
+    if (!cryptoData) {
+        alert('未找到该币种');
+        return;
+    }
+
+    try {
+        // 获取历史价格数据
+        const response = await fetch(
+            `${API_CONFIG.baseUrl}/coins/${cryptoData.id}/market_chart?` +
+            `vs_currency=usd&days=${days}&interval=daily`
+        );
+        const data = await response.json();
+        
+        // 处理数据
+        const prices = data.prices.map(p => ({
+            date: new Date(p[0]).toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' }),
+            price: p[1]
+        }));
+
+        displayPriceChart(cryptoData.name, prices);
+    } catch (error) {
+        console.error('获取价格数据失败:', error);
+        alert('无法获取价格数据');
+    }
+}
+
+function displayPriceChart(cryptoName, prices) {
+    const ctx = document.getElementById('priceChart');
+    
+    if (priceChart) {
+        priceChart.destroy();
+    }
+
+    const dates = prices.map(p => p.date);
+    const priceValues = prices.map(p => p.price);
+    const avgPrice = priceValues.reduce((a, b) => a + b) / priceValues.length;
+
+    priceChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: `${cryptoName} 价格 (USD)`,
+                data: priceValues,
+                borderColor: '#6366f1',
+                backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                tension: 0.4,
+                fill: true,
+                pointRadius: 0,
+                pointHoverRadius: 6,
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: 'var(--text-primary)',
+                        font: { size: 12, weight: 'bold' }
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    callbacks: {
+                        label: function(context) {
+                            return `$${context.parsed.y.toFixed(2)}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    ticks: { color: 'var(--text-secondary)' },
+                    grid: { color: 'var(--border-color)' }
+                },
+                x: {
+                    ticks: { color: 'var(--text-secondary)' },
+                    grid: { color: 'var(--border-color)' }
+                }
+            }
+        }
+    });
+}
+
+// ============================================
+// 新闻聚合
+// ============================================
+let allNews = [];
+let newsFilter = 'all';
+
+async function loadNews() {
+    try {
+        // 使用免费 API: Cryptopanic
+        const response = await fetch(
+            'https://cryptopanic.com/api/v1/posts/?auth=a&kind=news&public=true'
+        );
+        const data = await response.json();
+        
+        allNews = data.results || [];
+        displayNews();
+    } catch (error) {
+        console.error('获取新闻失败:', error);
+        // 显示演示新闻
+        displayDemoNews();
+    }
+}
+
+function displayDemoNews() {
+    allNews = [
+        {
+            title: '比特币突破新高',
+            description: '比特币价格今日创下历史新高，市场情绪乐观。',
+            source: { title: 'CryptoNews' },
+            url: '#',
+            created_at: new Date().toISOString(),
+            category: 'bitcoin'
+        },
+        {
+            title: '以太坊升级进展',
+            description: '以太坊第二层扩容方案取得重大进展，性能提升显著。',
+            source: { title: 'Ethereum Blog' },
+            url: '#',
+            created_at: new Date(Date.now() - 3600000).toISOString(),
+            category: 'ethereum'
+        },
+        {
+            title: 'DeFi 生态发展',
+            description: 'DeFi 协议总锁定价值(TVL)超过 1000 亿美元，创新应用不断涌现。',
+            source: { title: 'DeFi Pulse' },
+            url: '#',
+            created_at: new Date(Date.now() - 7200000).toISOString(),
+            category: 'defi'
+        }
+    ];
+    displayNews();
+}
+
+function displayNews() {
+    const newsFeed = document.getElementById('newsFeed');
+    
+    let filteredNews = allNews;
+    if (newsFilter !== 'all') {
+        filteredNews = allNews.filter(news => {
+            const title = news.title.toLowerCase();
+            const desc = news.description ? news.description.toLowerCase() : '';
+            
+            if (newsFilter === 'bitcoin') return title.includes('bitcoin') || desc.includes('bitcoin');
+            if (newsFilter === 'ethereum') return title.includes('ethereum') || desc.includes('ethereum');
+            if (newsFilter === 'defi') return title.includes('defi') || desc.includes('defi');
+            return true;
+        });
+    }
+
+    if (filteredNews.length === 0) {
+        newsFeed.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-secondary);">暂无相关新闻</div>';
+        return;
+    }
+
+    newsFeed.innerHTML = filteredNews.slice(0, 10).map(news => {
+        const date = new Date(news.created_at);
+        const timeAgo = getTimeAgo(date);
+        
+        return `
+            <div class="news-item">
+                <div class="news-item-header">
+                    <div class="news-item-title">${news.title}</div>
+                    <div class="news-item-time">${timeAgo}</div>
+                </div>
+                <div class="news-item-description">
+                    ${news.description || '暂无描述'}
+                </div>
+                <div>
+                    <span class="news-item-source">${news.source?.title || 'News'}</span>
+                </div>
+                <a href="${news.url}" target="_blank" class="news-item-link">阅读全文 →</a>
+            </div>
+        `;
+    }).join('');
+}
+
+function filterNews(category) {
+    newsFilter = category;
+    
+    // 更新按钮状态
+    document.querySelectorAll('.news-filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    
+    displayNews();
+}
+
+function getTimeAgo(date) {
+    const now = new Date();
+    const seconds = Math.floor((now - date) / 1000);
+    
+    if (seconds < 60) return '刚刚';
+    if (seconds < 3600) return `${Math.floor(seconds / 60)}分钟前`;
+    if (seconds < 86400) return `${Math.floor(seconds / 3600)}小时前`;
+    return `${Math.floor(seconds / 86400)}天前`;
 }
