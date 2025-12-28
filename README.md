@@ -2,7 +2,6 @@
 
 ## Observation-CryptocurrencyA website for observing cryptocurrencies
 
-
 一个专业的加密货币市场观测平台，提供实时数据、市场分析和趋势预测。
 
 ---
@@ -112,7 +111,7 @@
 Observation-Cryptocurrency/
 ├── index.html              # 主页面
 ├── css/
-│   └── styles.css          # 全局样式表
+│   └��─ styles.css          # 全局样式表
 ├── js/
 │   └── app.js              # 主要JavaScript逻辑
 ├── assets/                 # 资源文件夹
@@ -244,16 +243,16 @@ Observation-Cryptocurrency/
 #### 主要端点
 
 1. **全球数据**
-   ```
-   GET https://api.coingecko.com/api/v3/global
-   ```
-   获取市场总值、交易量、比特币占比等
+```
+GET https://api.coingecko.com/api/v3/global
+```
+获取市场总值、交易量、比特币占比等
 
 2. **加密货币市场数据**
-   ```
-   GET https://api.coingecko.com/api/v3/coins/markets
-   ```
-   获取币种价格、市值、成交量等
+```
+GET https://api.coingecko.com/api/v3/coins/markets
+```
+获取币种价格、市值、成交量等
 
 ### API 特点
 - ✅ 完全免费
@@ -407,6 +406,12 @@ const API_CONFIG = {
 
 - GitHub: [lunina8403](https://github.com/lunina8403)
 - 项目主页: [Observation-Cryptocurrency](https://github.com/lunina8403/Observation-Cryptocurrency)
+
+---
+
+<a href="https://dartnode.com/open-source" target="_blank" rel="noopener noreferrer">
+  <img src="https://dartnode.com/branding/DN-Open-Source-sm.png" alt="Powered by DartNode" height="60" />
+</a>
 
 ---
 
