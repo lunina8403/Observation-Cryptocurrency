@@ -413,6 +413,10 @@ const API_CONFIG = {
 ## ⭐ 致谢
 
 感谢 [CoinGecko](https://www.coingecko.com/) 提供免费的加密货币数据 API。
+## Powered by DartNode
+
+[![DartNode](https://dartnode.com/logo.png)](https://dartnode.com)
+
 
 ---
 
