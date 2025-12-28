@@ -409,9 +409,7 @@ const API_CONFIG = {
 
 ---
 
-<a href="https://dartnode.com/open-source" target="_blank" rel="noopener noreferrer">
-  <img src="https://dartnode.com/branding/DN-Open-Source-sm.png" alt="Powered by DartNode" height="60" />
-</a>
+[![Powered by DartNode](https://dartnode.com/branding/DN-Open-Source-sm.png)](https://dartnode.com "Powered by DartNode - Free VPS for Open Source")
 
 ---
 
