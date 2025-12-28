@@ -419,7 +419,3 @@ const API_CONFIG = {
 **最后更新**: 2025年11月16日
 
 *快来观测加密货币市场吧！🚀*
-
-## Powered by DartNode
-
-[![DartNode](https://dartnode.com/logo.png)](https://dartnode.com)
