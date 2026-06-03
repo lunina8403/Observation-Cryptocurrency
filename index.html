@@ -1,50 +1,50 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>加密货币观测 - Cryptocurrency Observer</title>
+    <title>Cryptocurrency Observer - Cryptocurrency Observer</title>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- 导航栏 -->
+    <!-- Navbar -->
     <nav class="navbar">
         <div class="navbar-container">
             <div class="navbar-logo">
                 <i class="fas fa-chart-line"></i>
-                <span>加密货币观测</span>
+                <span>Cryptocurrency Observer</span>
             </div>
             <ul class="nav-menu">
                 <li class="nav-item">
-                    <a href="#home" class="nav-link active">首页</a>
+                    <a href="#home" class="nav-link active">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#overview" class="nav-link">概览</a>
+                    <a href="#overview" class="nav-link">Overview</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#analysis" class="nav-link">分析</a>
+                    <a href="#analysis" class="nav-link">Analysis</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#portfolio" class="nav-link">投资组合</a>
+                    <a href="#portfolio" class="nav-link">Portfolio</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#comparison" class="nav-link">对比分析</a>
+                    <a href="#comparison" class="nav-link">Comparison</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#charts" class="nav-link">价格图表</a>
+                    <a href="#charts" class="nav-link">Price Charts</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#prediction" class="nav-link">AI预测</a>
+                    <a href="#prediction" class="nav-link">AI Prediction</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#realtime" class="nav-link">实时推送</a>
+                    <a href="#realtime" class="nav-link">Realtime Feed</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#news" class="nav-link">行业新闻</a>
+                    <a href="#news" class="nav-link">News</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#about" class="nav-link">关于</a>
+                    <a href="#about" class="nav-link">About</a>
                 </li>
             </ul>
             <div class="hamburger">
@@ -52,148 +52,148 @@
                 <span></span>
                 <span></span>
             </div>
-            <button id="themeToggle" class="theme-toggle" title="切换主题">
+            <button id="themeToggle" class="theme-toggle" title="Toggle Theme">
                 <i class="fas fa-moon"></i>
             </button>
         </div>
     </nav>
 
-    <!-- 主容器 -->
+    <!-- Main Container -->
     <main class="main-container">
-        <!-- 英雄区域 -->
+        <!-- Hero Section -->
         <section class="hero" id="home">
             <div class="hero-content">
-                <h1 class="hero-title">全球加密货币实时观测</h1>
-                <p class="hero-subtitle">洞察市场趋势，助力投资决策</p>
-                <button class="btn btn-primary" onclick="scrollToSection('overview')">开始观测</button>
+                <h1 class="hero-title">Global Cryptocurrency Live Tracker</h1>
+                <p class="hero-subtitle">Gain market insights for smarter investing</p>
+                <button class="btn btn-primary" onclick="scrollToSection('overview')">Start Tracking</button>
             </div>
             <div class="hero-image">
                 <i class="fas fa-chart-pie"></i>
             </div>
         </section>
 
-        <!-- 统计信息区域 -->
+        <!-- Stats Section -->
         <section class="stats-section">
             <div class="stats-container">
                 <div class="stat-card">
-                    <h3>市场总值</h3>
+                    <h3>Total Market Cap</h3>
                     <p class="stat-value" id="marketCap">--</p>
                     <p class="stat-label">USD</p>
                 </div>
                 <div class="stat-card">
-                    <h3>24小时交易量</h3>
+                    <h3>24h Volume</h3>
                     <p class="stat-value" id="volume24h">--</p>
                     <p class="stat-label">USD</p>
                 </div>
                 <div class="stat-card">
-                    <h3>比特币占比</h3>
+                    <h3>Bitcoin Dominance</h3>
                     <p class="stat-value" id="btcDominance">--</p>
                     <p class="stat-label">%</p>
                 </div>
                 <div class="stat-card">
-                    <h3>上市币种数</h3>
+                    <h3>Active Cryptocurrencies</h3>
                     <p class="stat-value" id="activeCrypto">--</p>
-                    <p class="stat-label">个</p>
+                    <p class="stat-label">coins</p>
                 </div>
             </div>
         </section>
 
-        <!-- 概览区域 -->
+        <!-- Overview Section -->
         <section class="overview-section" id="overview">
             <div class="section-header">
-                <h2>主流加密货币实时行情</h2>
-                <p>监测全球市场领先的加密货币</p>
+                <h2>Leading Cryptocurrency Market Data</h2>
+                <p>Track top global cryptocurrencies</p>
             </div>
             
             <div class="filter-controls">
-                <input type="text" id="searchInput" class="search-box" placeholder="搜索加密货币...">
+                <input type="text" id="searchInput" class="search-box" placeholder="Search cryptocurrencies...">
                 <select id="sortSelect" class="sort-select">
-                    <option value="market_cap">按市值排序</option>
-                    <option value="price">按价格排序</option>
-                    <option value="change_24h">按涨跌幅排序</option>
+                    <option value="market_cap">Sort by Market Cap</option>
+                    <option value="price">Sort by Price</option>
+                    <option value="change_24h">Sort by 24h Change</option>
                 </select>
                 <button id="refreshBtn" class="btn btn-secondary">
-                    <i class="fas fa-sync-alt"></i> 刷新
+                    <i class="fas fa-sync-alt"></i> Refresh
                 </button>
                 <button id="exportBtn" class="btn btn-secondary">
-                    <i class="fas fa-download"></i> 导出
+                    <i class="fas fa-download"></i> Export
                 </button>
             </div>
 
             <div class="crypto-grid" id="cryptoGrid">
                 <div class="loading">
-                    <i class="fas fa-spinner fa-spin"></i> 加载中...
+                    <i class="fas fa-spinner fa-spin"></i> Loading...
                 </div>
             </div>
         </section>
 
-        <!-- 分析区域 -->
+        <!-- Analysis Section -->
         <section class="analysis-section" id="analysis">
             <div class="section-header">
-                <h2>市场分析</h2>
-                <p>深入了解市场趋势和动向</p>
+                <h2>Market Analysis</h2>
+                <p>Explore market trends and momentum</p>
             </div>
 
             <div class="analysis-grid">
                 <div class="analysis-card">
-                    <h3>市场概况</h3>
+                    <h3>Market Overview</h3>
                     <div id="marketOverview" class="analysis-content">
-                        <p>加载市场数据中...</p>
+                        <p>Loading market data...</p>
                     </div>
                 </div>
                 <div class="analysis-card">
-                    <h3>价格波动分析</h3>
+                    <h3>Volatility Analysis</h3>
                     <div id="volatilityAnalysis" class="analysis-content">
-                        <p>分析数据加载中...</p>
+                        <p>Loading analysis data...</p>
                     </div>
                 </div>
                 <div class="analysis-card">
-                    <h3>赚钱榜（24h）</h3>
+                    <h3>Top Gainers (24h)</h3>
                     <div id="topGainers" class="analysis-content">
-                        <p>加载中...</p>
+                        <p>Loading...</p>
                     </div>
                 </div>
                 <div class="analysis-card">
-                    <h3>亏损榜（24h）</h3>
+                    <h3>Top Losers (24h)</h3>
                     <div id="topLosers" class="analysis-content">
-                        <p>加载中...</p>
+                        <p>Loading...</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 投资组合区域 -->
+        <!-- Portfolio Section -->
         <section class="portfolio-section" id="portfolio">
             <div class="section-header">
-                <h2>我的投资组合</h2>
-                <p>管理和追踪您的加密货币投资</p>
+                <h2>My Portfolio</h2>
+                <p>Manage and track your crypto investments</p>
             </div>
             <div class="portfolio-container">
                 <div class="portfolio-form">
-                    <h3>添加持仓</h3>
-                    <input type="text" id="portfolioCrypto" placeholder="币种名称或代码" list="cryptoList" class="form-input">
+                    <h3>Add Position</h3>
+                    <input type="text" id="portfolioCrypto" placeholder="Crypto name or symbol" list="cryptoList" class="form-input">
                     <datalist id="cryptoList"></datalist>
-                    <input type="number" id="portfolioAmount" placeholder="持仓数量" step="0.00000001" class="form-input">
-                    <input type="number" id="portfolioBuyPrice" placeholder="买入价格" step="0.01" class="form-input">
-                    <button class="btn btn-primary" onclick="addPortfolioItem()">添加</button>
+                    <input type="number" id="portfolioAmount" placeholder="Amount" step="0.00000001" class="form-input">
+                    <input type="number" id="portfolioBuyPrice" placeholder="Buy Price" step="0.01" class="form-input">
+                    <button class="btn btn-primary" onclick="addPortfolioItem()">Add</button>
                 </div>
                 <div class="portfolio-summary">
-                    <h3>投资组合概览</h3>
+                    <h3>Portfolio Overview</h3>
                     <div id="portfolioStats" class="portfolio-stats">
                         <div class="portfolio-stat">
-                            <span>总投资额</span>
+                            <span>Total Invested</span>
                             <span id="totalInvested">$0</span>
                         </div>
                         <div class="portfolio-stat">
-                            <span>当前价值</span>
+                            <span>Current Value</span>
                             <span id="currentValue">$0</span>
                         </div>
                         <div class="portfolio-stat">
-                            <span>收益/亏损</span>
+                            <span>Gain/Loss</span>
                             <span id="gainLoss">$0</span>
                         </div>
                         <div class="portfolio-stat">
-                            <span>收益率</span>
+                            <span>Return Rate</span>
                             <span id="gainLossPercent">0%</span>
                         </div>
                     </div>
@@ -202,44 +202,44 @@
             <div id="portfolioList" class="portfolio-list"></div>
         </section>
 
-        <!-- 币种对比分析区域 -->
+        <!-- Comparison Section -->
         <section class="comparison-section" id="comparison">
             <div class="section-header">
-                <h2>币种对比分析</h2>
-                <p>对比多个币种的关键指标</p>
+                <h2>Crypto Comparison</h2>
+                <p>Compare key metrics across multiple coins</p>
             </div>
 
             <div class="comparison-controls">
-                <input type="text" id="comparisonInput1" placeholder="选择币种1" list="comparisonCryptoList1" class="comparison-input">
+                <input type="text" id="comparisonInput1" placeholder="Choose coin 1" list="comparisonCryptoList1" class="comparison-input">
                 <datalist id="comparisonCryptoList1"></datalist>
-                <button class="btn btn-secondary" onclick="addComparisonCrypto(1)">添加</button>
+                <button class="btn btn-secondary" onclick="addComparisonCrypto(1)">Add</button>
 
-                <input type="text" id="comparisonInput2" placeholder="选择币种2" list="comparisonCryptoList2" class="comparison-input">
+                <input type="text" id="comparisonInput2" placeholder="Choose coin 2" list="comparisonCryptoList2" class="comparison-input">
                 <datalist id="comparisonCryptoList2"></datalist>
-                <button class="btn btn-secondary" onclick="addComparisonCrypto(2)">添加</button>
+                <button class="btn btn-secondary" onclick="addComparisonCrypto(2)">Add</button>
 
-                <button class="btn btn-primary" onclick="clearComparison()">清空对比</button>
+                <button class="btn btn-primary" onclick="clearComparison()">Clear Comparison</button>
             </div>
 
             <div id="comparisonContainer" class="comparison-container"></div>
         </section>
 
-        <!-- 价格图表区域 -->
+        <!-- Charts Section -->
         <section class="charts-section" id="charts">
             <div class="section-header">
-                <h2>价格走势分析</h2>
-                <p>查看加密货币历史价格走势</p>
+                <h2>Price Trend Analysis</h2>
+                <p>View historical cryptocurrency price trends</p>
             </div>
 
             <div class="chart-controls">
-                <input type="text" id="chartCryptoInput" placeholder="选择币种" list="chartCryptoList" class="chart-input">
+                <input type="text" id="chartCryptoInput" placeholder="Choose coin" list="chartCryptoList" class="chart-input">
                 <datalist id="chartCryptoList"></datalist>
                 <select id="chartPeriodSelect" class="chart-select">
-                    <option value="7">7日走势</option>
-                    <option value="30">30日走势</option>
-                    <option value="365">1年走势</option>
+                    <option value="7">7-day trend</option>
+                    <option value="30">30-day trend</option>
+                    <option value="365">1-year trend</option>
                 </select>
-                <button class="btn btn-primary" onclick="loadPriceChart()">查看图表</button>
+                <button class="btn btn-primary" onclick="loadPriceChart()">View Chart</button>
             </div>
 
             <div id="chartContainer" class="chart-container">
@@ -247,36 +247,36 @@
             </div>
         </section>
 
-        <!-- AI 市场预测区域 -->
+        <!-- AI Prediction Section -->
         <section class="prediction-section" id="prediction">
             <div class="section-header">
-                <h2>AI 市场预测</h2>
-                <p>基于技术分析和历史数据的价格预测</p>
+                <h2>AI Market Prediction</h2>
+                <p>Price forecasts based on technical and historical data</p>
             </div>
 
             <div class="prediction-controls">
-                <input type="text" id="predictionCryptoInput" placeholder="选择币种" list="predictionCryptoList" class="prediction-input">
+                <input type="text" id="predictionCryptoInput" placeholder="Choose coin" list="predictionCryptoList" class="prediction-input">
                 <datalist id="predictionCryptoList"></datalist>
-                <button class="btn btn-primary" onclick="generatePrediction()">生成预测</button>
+                <button class="btn btn-primary" onclick="generatePrediction()">Generate Prediction</button>
             </div>
 
             <div id="predictionContainer" class="prediction-container">
-                <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">选择币种并点击"生成预测"</div>
+                <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">Choose a coin and click "Generate Prediction"</div>
             </div>
         </section>
 
-        <!-- 实时价格推送区域 -->
+        <!-- Realtime Price Section -->
         <section class="realtime-section" id="realtime">
             <div class="section-header">
-                <h2>实时价格推送</h2>
-                <p>WebSocket 实时价格数据流</p>
+                <h2>Real-time Price Feed</h2>
+                <p>WebSocket live price stream</p>
             </div>
 
             <div class="realtime-controls">
-                <input type="text" id="realtimeCryptoInput" placeholder="选择币种" list="realtimeCryptoList" class="realtime-input">
+                <input type="text" id="realtimeCryptoInput" placeholder="Choose coin" list="realtimeCryptoList" class="realtime-input">
                 <datalist id="realtimeCryptoList"></datalist>
-                <button class="btn btn-primary" id="connectBtn" onclick="toggleRealtimeConnection()">连接实时数据</button>
-                <span id="connectionStatus" class="connection-status disconnected">● 未连接</span>
+                <button class="btn btn-primary" id="connectBtn" onclick="toggleRealtimeConnection()">Connect Live Data</button>
+                <span id="connectionStatus" class="connection-status disconnected">● Disconnected</span>
             </div>
 
             <div id="realtimeContainer" class="realtime-container">
@@ -284,56 +284,56 @@
             </div>
         </section>
 
-        <!-- 行业新闻区域 -->
+        <!-- News Section -->
         <section class="news-section" id="news">
             <div class="section-header">
-                <h2>行业动态</h2>
-                <p>最新加密货币市场资讯</p>
+                <h2>Market News</h2>
+                <p>Latest crypto market updates</p>
             </div>
 
             <div class="news-filters">
-                <button class="news-filter-btn active" onclick="filterNews('all')">全部</button>
-                <button class="news-filter-btn" onclick="filterNews('bitcoin')">比特币</button>
-                <button class="news-filter-btn" onclick="filterNews('ethereum')">以太坊</button>
-                <button class="news-filter-btn" onclick="filterNews('defi')">DeFi</button>
+                <button class="news-filter-btn active" onclick="filterNews('all', event)">All</button>
+                <button class="news-filter-btn" onclick="filterNews('bitcoin', event)">Bitcoin</button>
+                <button class="news-filter-btn" onclick="filterNews('ethereum', event)">Ethereum</button>
+                <button class="news-filter-btn" onclick="filterNews('defi', event)">DeFi</button>
             </div>
 
             <div id="newsFeed" class="news-feed"></div>
         </section>
 
-        <!-- 关于区域 -->
+        <!-- About Section -->
         <section class="about-section" id="about">
             <div class="section-header">
-                <h2>关于本平台</h2>
-                <p>了解我们的使命和功能</p>
+                <h2>About This Platform</h2>
+                <p>Learn about our mission and features</p>
             </div>
 
             <div class="about-content">
                 <div class="about-card">
                     <i class="fas fa-rocket"></i>
-                    <h3>实时数据</h3>
-                    <p>使用 CoinGecko API 获取实时的加密货币数据，确保信息准确无误。</p>
+                    <h3>Live Data</h3>
+                    <p>Uses the CoinGecko API for live crypto data and reliable information.</p>
                 </div>
                 <div class="about-card">
                     <i class="fas fa-chart-bar"></i>
-                    <h3>市场分析</h3>
-                    <p>提供详细的市场分析和趋势预测，帮助投资者做出明智决策。</p>
+                    <h3>Market Insights</h3>
+                    <p>Offers detailed market analysis and trend forecasts to help investors make smarter decisions.</p>
                 </div>
                 <div class="about-card">
                     <i class="fas fa-mobile-alt"></i>
-                    <h3>响应式设计</h3>
-                    <p>完美适配各类设备，随时随地观测加密货币市场动态。</p>
+                    <h3>Responsive Design</h3>
+                    <p>Fully responsive across devices for tracking crypto markets anywhere.</p>
                 </div>
                 <div class="about-card">
                     <i class="fas fa-lock"></i>
-                    <h3>安全可靠</h3>
-                    <p>采用安全的数据加密技术，保护用户信息隐私。</p>
+                    <h3>Secure & Reliable</h3>
+                    <p>Uses secure data handling to protect user privacy.</p>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- 币种详情模态框 -->
+    <!-- Crypto Detail Modal -->
     <div id="cryptoDetailModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -348,124 +348,124 @@
             </div>
 
             <div class="modal-body">
-                <!-- 价格信息 -->
+                <!-- Price Info -->
                 <div class="detail-section">
-                    <h3>💰 价格信息</h3>
+                    <h3>💰 Price Info</h3>
                     <div class="detail-grid">
                         <div class="detail-item">
-                            <span class="label">当前价格</span>
+                            <span class="label">Current Price</span>
                             <span id="detailPrice" class="value price-highlight">-</span>
                         </div>
                         <div class="detail-item">
-                            <span class="label">24小时涨跌</span>
+                            <span class="label">24h Change</span>
                             <span id="detail24hChange" class="value">-</span>
                         </div>
                         <div class="detail-item">
-                            <span class="label">7天涨跌</span>
+                            <span class="label">7d Change</span>
                             <span id="detail7dChange" class="value">-</span>
                         </div>
                         <div class="detail-item">
-                            <span class="label">30天涨跌</span>
+                            <span class="label">30d Change</span>
                             <span id="detail30dChange" class="value">-</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- 市场数据 -->
+                <!-- Market Data -->
                 <div class="detail-section">
-                    <h3>📊 市场数据</h3>
+                    <h3>📊 Market Data</h3>
                     <div class="detail-grid">
                         <div class="detail-item">
-                            <span class="label">市值排名</span>
+                            <span class="label">Market Rank</span>
                             <span id="detailRank" class="value">-</span>
                         </div>
                         <div class="detail-item">
-                            <span class="label">市值</span>
+                            <span class="label">Market Cap</span>
                             <span id="detailMarketCap" class="value">-</span>
                         </div>
                         <div class="detail-item">
-                            <span class="label">24小时成交量</span>
+                            <span class="label">24h Volume</span>
                             <span id="detailVolume" class="value">-</span>
                         </div>
                         <div class="detail-item">
-                            <span class="label">流通市值占比</span>
+                            <span class="label">Market Cap Dominance</span>
                             <span id="detailMarketCapPercentage" class="value">-</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- 价格范围 -->
+                <!-- Price Range -->
                 <div class="detail-section">
-                    <h3>📈 价格范围</h3>
+                    <h3>📈 Price Range</h3>
                     <div class="detail-grid">
                         <div class="detail-item">
-                            <span class="label">24小时最高价</span>
+                            <span class="label">24h High</span>
                             <span id="detailHigh24h" class="value">-</span>
                         </div>
                         <div class="detail-item">
-                            <span class="label">24小时最低价</span>
+                            <span class="label">24h Low</span>
                             <span id="detailLow24h" class="value">-</span>
                         </div>
                         <div class="detail-item">
-                            <span class="label">历史最高价</span>
+                            <span class="label">All-Time High</span>
                             <span id="detailAth" class="value">-</span>
                         </div>
                         <div class="detail-item">
-                            <span class="label">历史最低价</span>
+                            <span class="label">All-Time Low</span>
                             <span id="detailAtl" class="value">-</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- 额外信息 -->
+                <!-- Additional Info -->
                 <div class="detail-section">
-                    <h3>ℹ️ 额外信息</h3>
+                    <h3>ℹ️ Additional Info</h3>
                     <div class="detail-grid">
                         <div class="detail-item">
-                            <span class="label">流通供应量</span>
+                            <span class="label">Circulating Supply</span>
                             <span id="detailCirculatingSupply" class="value">-</span>
                         </div>
                         <div class="detail-item">
-                            <span class="label">总供应量</span>
+                            <span class="label">Total Supply</span>
                             <span id="detailTotalSupply" class="value">-</span>
                         </div>
                         <div class="detail-item">
-                            <span class="label">最大供应量</span>
+                            <span class="label">Max Supply</span>
                             <span id="detailMaxSupply" class="value">-</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- 描述信息 -->
+                <!-- Description -->
                 <div class="detail-section">
-                    <h3>📝 项目描述</h3>
+                    <h3>📝 Project Description</h3>
                     <p id="detailDescription" class="detail-description"></p>
                 </div>
 
-                <!-- 官方链接 -->
+                <!-- Official Links -->
                 <div class="detail-section">
-                    <h3>🔗 官方链接</h3>
+                    <h3>🔗 Official Links</h3>
                     <div id="detailLinks" class="detail-links"></div>
                 </div>
 
-                <!-- 操作按钮 -->
+                <!-- Action Buttons -->
                 <div class="detail-section">
                     <div class="detail-actions">
-                        <button class="btn btn-primary" onclick="toggleDetailFavorite()">⭐ 添加收藏</button>
-                        <button class="btn btn-secondary" onclick="showDetailAlert()">🔔 设置预警</button>
-                        <button class="btn btn-secondary" onclick="addDetailToPortfolio()">💼 添加到组合</button>
-                        <button class="btn btn-secondary" onclick="closeDetailModal()">关闭</button>
+                        <button class="btn btn-primary" onclick="toggleDetailFavorite()">⭐ Add to Favorites</button>
+                        <button class="btn btn-secondary" onclick="showDetailAlert()">🔔 Set Alert</button>
+                        <button class="btn btn-secondary" onclick="addDetailToPortfolio()">💼 Add to Portfolio</button>
+                        <button class="btn btn-secondary" onclick="closeDetailModal()">Close</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 页脚 -->
+    <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
-            <p>&copy; 2024 加密货币观测平台. 版权所有。</p>
-            <p>数据来源: <a href="https://www.coingecko.com" target="_blank">CoinGecko</a></p>
+            <p>&copy; 2024 Cryptocurrency Observer. All rights reserved.</p>
+            <p>Data Source: <a href="https://www.coingecko.com" target="_blank">CoinGecko</a></p>
             <div class="social-links">
                 <a href="#"><i class="fab fa-twitter"></i></a>
                 <a href="#"><i class="fab fa-github"></i></a>
@@ -474,10 +474,10 @@
         </div>
     </footer>
 
-    <!-- 加载 Chart.js 库 -->
+    <!-- Load Chart.js Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <!-- Three.js CDN -->
-    <!-- 加载自定义脚本 -->
+    <!-- Load Custom Script -->
     <script src="js/app.js"></script>
 </body>
 </html>

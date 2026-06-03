@@ -1,14 +1,14 @@
 // ============================================
-// 加密货币观测平台 - JavaScript 主文件
+// Cryptocurrency Observer - Main JavaScript File
 // ============================================
 
-// API 配置
+// API Configuration
 const API_CONFIG = {
     baseUrl: 'https://api.coingecko.com/api/v3',
-    refreshInterval: 300000 // 5分钟刷新一次
+    refreshInterval: 300000 // Refresh every 5 minutes
 };
 
-// 应用状态
+// App State
 let appState = {
     cryptoData: [],
     filteredData: [],
@@ -21,12 +21,12 @@ let appState = {
 };
 
 // ============================================
-// 初始化函数
+// Initialization functions
 // ============================================
-// 初始化函数
+// Initialization functions
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('应用初始化中...');
+    console.log('App initializing...');
     initTheme();
     setupEventListeners();
     loadCryptoData();
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ============================================
-// 主题切换函数
+// Theme toggle function
 // ============================================
 function initTheme() {
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -71,16 +71,16 @@ function updateThemeIcon(theme) {
 }
 
 // ============================================
-// 事件监听器设置
+// Event listeners setup
 // ============================================
 function setupEventListeners() {
-    // 导航栏
+    // Navbar
     const navLinks = document.querySelectorAll('.nav-link');
     navLinks.forEach(link => {
         link.addEventListener('click', handleNavClick);
     });
 
-    // 汉堡菜单
+    // Hamburger menu
     const hamburger = document.querySelector('.hamburger');
     const navMenu = document.querySelector('.nav-menu');
     if (hamburger) {
@@ -89,19 +89,19 @@ function setupEventListeners() {
         });
     }
 
-    // 搜索框
+    // Search input
     const searchInput = document.getElementById('searchInput');
     if (searchInput) {
         searchInput.addEventListener('input', handleSearch);
     }
 
-    // 排序选择
+    // Sort options
     const sortSelect = document.getElementById('sortSelect');
     if (sortSelect) {
         sortSelect.addEventListener('change', handleSort);
     }
 
-    // 刷新按钮
+    // Refresh button
     const refreshBtn = document.getElementById('refreshBtn');
     if (refreshBtn) {
         refreshBtn.addEventListener('click', () => {
@@ -112,7 +112,7 @@ function setupEventListeners() {
         });
     }
 
-    // 导出按钮
+    // Export button
     const exportBtn = document.getElementById('exportBtn');
     if (exportBtn) {
         exportBtn.addEventListener('click', exportToCSV);
@@ -120,28 +120,28 @@ function setupEventListeners() {
 }
 
 // ============================================
-// API 数据获取函数
+// API data fetching functions
 // ============================================
 
 /**
- * 获取全球市场数据
+ * Fetch global market data
  */
 async function fetchGlobalData() {
     try {
         const response = await fetch(
             `${API_CONFIG.baseUrl}/global?localization=false`
         );
-        if (!response.ok) throw new Error('获取全球数据失败');
+        if (!response.ok) throw new Error('Failed to fetch global data');
         const data = await response.json();
         updateGlobalStats(data.data);
     } catch (error) {
-        console.error('获取全球数据错误:', error);
-        showErrorMessage('无法获取市场数据');
+        console.error('Failed to fetch global data:', error);
+        showErrorMessage('Unable to fetch market data');
     }
 }
 
 /**
- * 获取主流加密货币数据
+ * Fetch major cryptocurrency data
  */
 async function fetchCryptoData() {
     try {
@@ -153,18 +153,18 @@ async function fetchCryptoData() {
             `&page=1` +
             `&sparkline=false`
         );
-        if (!response.ok) throw new Error('获取加密货币数据失败');
+        if (!response.ok) throw new Error('Failed to fetch cryptocurrency data');
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error('获取加密货币数据错误:', error);
-        showErrorMessage('无法获取加密货币数据');
+        console.error('Failed to fetch cryptocurrency data:', error);
+        showErrorMessage('Unable to fetch cryptocurrency data');
         return [];
     }
 }
 
 /**
- * 获取涨跌幅最大的币种
+ * Fetch top movers
  */
 async function fetchTopMovers() {
     try {
@@ -176,26 +176,26 @@ async function fetchTopMovers() {
             `&page=1` +
             `&sparkline=false`
         );
-        if (!response.ok) throw new Error('获取涨跌数据失败');
+        if (!response.ok) throw new Error('Failed to fetch price change data');
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error('获取涨跌数据错误:', error);
+        console.error('Failed to fetch price change data:', error);
         return [];
     }
 }
 
 // ============================================
-// 数据加载主函数
+// Main data loading
 // ============================================
 async function loadCryptoData() {
     const cryptoGrid = document.getElementById('cryptoGrid');
     if (!cryptoGrid) return;
 
-    cryptoGrid.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> 加载中...</div>';
+    cryptoGrid.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
 
     try {
-        // 并行加载数据
+        // Load data in parallel
         const [marketData, cryptoData, topMovers] = await Promise.all([
             fetchGlobalData(),
             fetchCryptoData(),
@@ -210,53 +210,53 @@ async function loadCryptoData() {
             checkAlerts();
         }
     } catch (error) {
-        console.error('加载数据错误:', error);
-        cryptoGrid.innerHTML = '<div class="loading" style="grid-column: 1/-1; color: #ef4444;">加载数据失败，请稍后重试</div>';
+        console.error('Failed to load data:', error);
+        cryptoGrid.innerHTML = '<div class="loading" style="grid-column: 1/-1; color: #ef4444;">Failed to load data. Please try again later.</div>';
     }
 }
 
 // ============================================
-// 更新全球统计信息
+// Update global statistics
 // ============================================
 function updateGlobalStats(data) {
     try {
-        // 市场总值
+        // Total Market Cap
         const marketCap = document.getElementById('marketCap');
         if (marketCap && data.total_market_cap?.usd) {
             marketCap.textContent = formatCurrency(data.total_market_cap.usd);
         }
 
-        // 24小时交易量
+        // 24h Volume
         const volume24h = document.getElementById('volume24h');
         if (volume24h && data.total_volume?.usd) {
             volume24h.textContent = formatCurrency(data.total_volume.usd);
         }
 
-        // 比特币占比
+        // Bitcoin Dominance
         const btcDominance = document.getElementById('btcDominance');
         if (btcDominance && data.btc_market_cap_percentage) {
             btcDominance.textContent = data.btc_market_cap_percentage.btc?.toFixed(2) || '--';
         }
 
-        // 上市币种数
+        // Active Cryptocurrencies
         const activeCrypto = document.getElementById('activeCrypto');
         if (activeCrypto && data.active_cryptocurrencies) {
             activeCrypto.textContent = data.active_cryptocurrencies.toLocaleString();
         }
     } catch (error) {
-        console.error('更新全球统计错误:', error);
+        console.error('Error updating global stats:', error);
     }
 }
 
 // ============================================
-// 显示加密货币卡片
+// Display cryptocurrency cards
 // ============================================
 function displayCryptoCards() {
     const cryptoGrid = document.getElementById('cryptoGrid');
     if (!cryptoGrid) return;
 
     if (appState.filteredData.length === 0) {
-        cryptoGrid.innerHTML = '<div class="loading" style="grid-column: 1/-1;">未找到匹配的加密货币</div>';
+        cryptoGrid.innerHTML = '<div class="loading" style="grid-column: 1/-1;">No matching cryptocurrency found</div>';
         return;
     }
 
@@ -277,10 +277,10 @@ function displayCryptoCards() {
                 </div>
                 
                 <div class="crypto-actions">
-                    <button class="favorite-btn ${isFavorite ? 'active' : ''}" onclick="toggleFavorite('${crypto.id}', event)" title="收藏">
+                    <button class="favorite-btn ${isFavorite ? 'active' : ''}" onclick="toggleFavorite('${crypto.id}', event)" title="Favorite">
                         <i class="fas fa-star"></i>
                     </button>
-                    <button class="alert-btn" onclick="showAlertForm('${crypto.id}', '${crypto.name}', event)" title="设置预警">
+                    <button class="alert-btn" onclick="showAlertForm('${crypto.id}', '${crypto.name}', event)" title="Set Alert">
                         <i class="fas fa-bell"></i>
                     </button>
                 </div>
@@ -291,13 +291,13 @@ function displayCryptoCards() {
                 
                 <div class="crypto-change">
                     <div class="change-item">
-                        <div class="change-label">24小时涨跌</div>
+                        <div class="change-label">24h Change</div>
                         <div class="change-value ${isPositive ? 'change-positive' : 'change-negative'}">
                             ${changeIcon} ${isPositive ? '+' : ''}${priceChange.toFixed(2)}%
                         </div>
                     </div>
                     <div class="change-item">
-                        <div class="change-label">7天涨跌</div>
+                        <div class="change-label">7d Change</div>
                         <div class="change-value ${(crypto.price_change_percentage_7d || 0) >= 0 ? 'change-positive' : 'change-negative'}">
                             ${(crypto.price_change_percentage_7d || 0) >= 0 ? '📈' : '📉'} ${(crypto.price_change_percentage_7d || 0).toFixed(2)}%
                         </div>
@@ -306,25 +306,25 @@ function displayCryptoCards() {
                 
                 <div class="crypto-details">
                     <div class="detail-item">
-                        <div class="detail-label">市值</div>
+                        <div class="detail-label">Market Cap</div>
                         <div class="detail-value">
                             ${crypto.market_cap ? formatCurrency(crypto.market_cap) : 'N/A'}
                         </div>
                     </div>
                     <div class="detail-item">
-                        <div class="detail-label">24小时成交量</div>
+                        <div class="detail-label">24h Volume</div>
                         <div class="detail-value">
                             ${crypto.total_volume ? formatCurrency(crypto.total_volume) : 'N/A'}
                         </div>
                     </div>
                     <div class="detail-item">
-                        <div class="detail-label">最高价（24h）</div>
+                        <div class="detail-label">24h High</div>
                         <div class="detail-value">
                             $${formatNumber(crypto.high_24h || 0)}
                         </div>
                     </div>
                     <div class="detail-item">
-                        <div class="detail-label">最低价（24h）</div>
+                        <div class="detail-label">24h Low</div>
                         <div class="detail-value">
                             $${formatNumber(crypto.low_24h || 0)}
                         </div>
@@ -334,12 +334,12 @@ function displayCryptoCards() {
         `;
     }).join('');
     
-    // 填充所有 datalist
+    // Populate all datalists
     populateDataLists();
 }
 
 // ============================================
-// 填充搜索建议列表
+// Populate search suggestion lists
 // ============================================
 function populateDataLists() {
     const datalists = [
@@ -361,7 +361,7 @@ function populateDataLists() {
 }
 
 // ============================================
-// 收藏功能
+// Favorite functionality
 // ============================================
 function toggleFavorite(cryptoId, event) {
     event.stopPropagation();
@@ -376,11 +376,11 @@ function toggleFavorite(cryptoId, event) {
 }
 
 // ============================================
-// 预警功能
+// Alert functionality
 // ============================================
 function showAlertForm(cryptoId, cryptoName, event) {
     event.stopPropagation();
-    const price = prompt(`为 ${cryptoName} 设置价格预警（美元）:`, '');
+    const price = prompt(`Set a price alert for ${cryptoName} (USD):`, '');
     if (price !== null && price !== '') {
         if (!appState.alerts[cryptoId]) {
             appState.alerts[cryptoId] = [];
@@ -391,7 +391,7 @@ function showAlertForm(cryptoId, cryptoName, event) {
             createdAt: new Date().toLocaleString()
         });
         localStorage.setItem('alerts', JSON.stringify(appState.alerts));
-        alert(`已为 ${cryptoName} 设置 $${price} 的价格预警`);
+        alert(`Price alert set for ${cryptoName} at $${price}`);
     }
 }
 
@@ -410,32 +410,32 @@ function checkAlerts() {
 }
 
 function notifyAlert(name, targetPrice, currentPrice) {
-    const message = `${name} 已达到预警价格！目标: $${targetPrice}, 当前: $${currentPrice.toFixed(2)}`;
+    const message = `${name} has reached the alert price! Target: $${targetPrice}, Current: $${currentPrice.toFixed(2)}`;
     console.log(message);
     if ('Notification' in window && Notification.permission === 'granted') {
-        new Notification('加密货币预警', { body: message });
+        new Notification('Crypto Alert', { body: message });
     } else {
         alert(message);
     }
 }
 
 // ============================================
-// 市场分析
+// Market Analysis
 // ============================================
 function analyzeMarket(data) {
     if (!Array.isArray(data) || data.length === 0) return;
 
-    // 计算涨幅最大的币种（赚钱榜）
+    // Calculate top gainers
     const gainers = [...data]
         .sort((a, b) => (b.price_change_percentage_24h || 0) - (a.price_change_percentage_24h || 0))
         .slice(0, 5);
 
-    // 计算跌幅最大的币种（亏损榜）
+    // Calculate top losers
     const losers = [...data]
         .sort((a, b) => (a.price_change_percentage_24h || 0) - (b.price_change_percentage_24h || 0))
         .slice(0, 5);
 
-    // 更新赚钱榜
+    // Update top gainers
     const topGainersDiv = document.getElementById('topGainers');
     if (topGainersDiv) {
         const gainersList = gainers.map(coin => `
@@ -449,7 +449,7 @@ function analyzeMarket(data) {
         topGainersDiv.innerHTML = `<ul class="analysis-list">${gainersList}</ul>`;
     }
 
-    // 更新亏损榜
+    // Update top losers
     const topLosersDiv = document.getElementById('topLosers');
     if (topLosersDiv) {
         const losersList = losers.map(coin => `
@@ -463,15 +463,15 @@ function analyzeMarket(data) {
         topLosersDiv.innerHTML = `<ul class="analysis-list">${losersList}</ul>`;
     }
 
-    // 市场概况分析
+    // Market Overview Analysis
     updateMarketOverview(data);
 
-    // 价格波动分析
+    // Volatility Analysis
     updateVolatilityAnalysis(data);
 }
 
 /**
- * 更新市场概况
+ * Update Market Overview
  */
 function updateMarketOverview(data) {
     const marketOverviewDiv = document.getElementById('marketOverview');
@@ -484,15 +484,15 @@ function updateMarketOverview(data) {
     marketOverviewDiv.innerHTML = `
         <div class="analysis-content" style="display: flex; flex-direction: column; gap: 1rem;">
             <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
-                <span style="color: var(--text-secondary);">上涨币种</span>
+                <span style="color: var(--text-secondary);">Rising coins</span>
                 <span style="color: var(--success-color); font-weight: bold;">${positiveCount}</span>
             </div>
             <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
-                <span style="color: var(--text-secondary);">下跌币种</span>
+                <span style="color: var(--text-secondary);">Falling coins</span>
                 <span style="color: var(--danger-color); font-weight: bold;">${negativeCount}</span>
             </div>
             <div style="display: flex; justify-content: space-between;">
-                <span style="color: var(--text-secondary);">平均涨跌幅</span>
+                <span style="color: var(--text-secondary);">Average change</span>
                 <span style="color: ${avgChange >= 0 ? 'var(--success-color)' : 'var(--danger-color)'}; font-weight: bold;">${avgChange > 0 ? '+' : ''}${avgChange}%</span>
             </div>
         </div>
@@ -500,13 +500,13 @@ function updateMarketOverview(data) {
 }
 
 /**
- * 更新价格波动分析
+ * Update volatility analysis
  */
 function updateVolatilityAnalysis(data) {
     const volatilityDiv = document.getElementById('volatilityAnalysis');
     if (!volatilityDiv) return;
 
-    // 计算波动率
+    // Calculate volatility
     const priceChanges = data.map(d => Math.abs(d.price_change_percentage_24h || 0));
     const avgVolatility = (priceChanges.reduce((a, b) => a + b, 0) / priceChanges.length).toFixed(2);
     const maxVolatility = Math.max(...priceChanges).toFixed(2);
@@ -515,15 +515,15 @@ function updateVolatilityAnalysis(data) {
     volatilityDiv.innerHTML = `
         <div class="analysis-content" style="display: flex; flex-direction: column; gap: 1rem;">
             <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
-                <span style="color: var(--text-secondary);">平均波动率</span>
+                <span style="color: var(--text-secondary);">Average volatility</span>
                 <span style="color: var(--warning-color); font-weight: bold;">${avgVolatility}%</span>
             </div>
             <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
-                <span style="color: var(--text-secondary);">最大波动</span>
+                <span style="color: var(--text-secondary);">Max volatility</span>
                 <span style="color: var(--danger-color); font-weight: bold;">${maxVolatility}%</span>
             </div>
             <div style="display: flex; justify-content: space-between;">
-                <span style="color: var(--text-secondary);">最小波动</span>
+                <span style="color: var(--text-secondary);">Min volatility</span>
                 <span style="color: var(--success-color); font-weight: bold;">${minVolatility}%</span>
             </div>
         </div>
@@ -531,11 +531,11 @@ function updateVolatilityAnalysis(data) {
 }
 
 // ============================================
-// 搜索和排序处理
+// Search and sort handling
 // ============================================
 
 /**
- * 处理搜索
+ * Handle search
  */
 function handleSearch(event) {
     appState.searchQuery = event.target.value.toLowerCase();
@@ -543,7 +543,7 @@ function handleSearch(event) {
 }
 
 /**
- * 处理排序
+ * Handle sort
  */
 function handleSort(event) {
     appState.sortBy = event.target.value;
@@ -551,12 +551,12 @@ function handleSort(event) {
 }
 
 /**
- * 应用过滤和排序
+ * Apply filtering and sorting
  */
 function applyFiltersAndSort() {
     let filtered = [...appState.cryptoData];
 
-    // 应用搜索过滤
+    // Apply search filter
     if (appState.searchQuery) {
         filtered = filtered.filter(crypto =>
             crypto.name.toLowerCase().includes(appState.searchQuery) ||
@@ -564,7 +564,7 @@ function applyFiltersAndSort() {
         );
     }
 
-    // 应用排序
+    // Apply sorting
     switch (appState.sortBy) {
         case 'price':
             filtered.sort((a, b) => b.current_price - a.current_price);
@@ -582,24 +582,24 @@ function applyFiltersAndSort() {
 }
 
 // ============================================
-// 导航处理
+// Navigation handling
 // ============================================
 
 /**
- * 处理导航链接点击
+ * Handle navigation link click
  */
 function handleNavClick(event) {
     event.preventDefault();
     const navMenu = document.querySelector('.nav-menu');
     navMenu.classList.remove('active');
 
-    // 更新活跃链接
+    // Update active link
     document.querySelectorAll('.nav-link').forEach(link => {
         link.classList.remove('active');
     });
-    event.target.classList.add('active');
+    if (event && event.target) { event.target.classList.add('active'); }
 
-    // 平滑滚动到目标
+    // Smooth scroll to target
     const targetId = event.target.getAttribute('href').substring(1);
     const targetElement = document.getElementById(targetId);
     if (targetElement) {
@@ -608,7 +608,7 @@ function handleNavClick(event) {
 }
 
 /**
- * 滚动到指定区域
+ * Scroll to section
  */
 function scrollToSection(sectionId) {
     const section = document.getElementById(sectionId);
@@ -618,25 +618,25 @@ function scrollToSection(sectionId) {
 }
 
 // ============================================
-// 自动刷新功能
+// Auto-refresh functionality
 // ============================================
 
 /**
- * 设置自动刷新
+ * Set up auto-refresh
  */
 function setupAutoRefresh() {
-    // 初始加载
+    // Initial load
     fetchGlobalData();
 
-    // 每5分钟刷新一次
+    // Refresh every 5 minutes
     appState.autoRefreshInterval = setInterval(() => {
-        console.log('自动刷新数据...');
+        console.log('Refreshing data...');
         fetchGlobalData();
     }, API_CONFIG.refreshInterval);
 }
 
 /**
- * 停止自动刷新
+ * Stop auto-refresh
  */
 function stopAutoRefresh() {
     if (appState.autoRefreshInterval) {
@@ -646,11 +646,11 @@ function stopAutoRefresh() {
 }
 
 // ============================================
-// 工具函数
+// Utility functions
 // ============================================
 
 /**
- * 格式化数字
+ * Format numbers
  */
 function formatNumber(num) {
     if (!num || num === 0) return '0.00';
@@ -661,7 +661,7 @@ function formatNumber(num) {
 }
 
 /**
- * 格式化货币
+ * Format currency
  */
 function formatCurrency(value) {
     if (!value || value === 0) return '$0';
@@ -685,33 +685,33 @@ function formatCurrency(value) {
 }
 
 /**
- * 显示错误消息
+ * Show error message
  */
 function showErrorMessage(message) {
     console.error(message);
-    // 可以在这里添加 Toast 通知
+    // Toast notifications can be added here
 }
 
 // ============================================
-// 页面卸载处理
+// Page unload handling
 // ============================================
 window.addEventListener('beforeunload', () => {
     stopAutoRefresh();
 });
 
 // ============================================
-// 数据导出功能
+// Data export functionality
 // ============================================
 function exportToCSV() {
     if (appState.filteredData.length === 0) {
-        alert('没有数据可导出');
+        alert('No data available to export');
         return;
     }
 
-    // 构建 CSV 标题行
-    const headers = ['排名', '名称', '代码', '价格(USD)', '24h涨跌(%)', '7d涨跌(%)', '市值', '24h交易量', '最高价', '最低价'];
+    // Build CSV header row
+    const headers = ['Rank', 'Name', 'Code', 'Price (USD)', '24h Change (%)', '7d Change (%)', 'Market Cap', '24h Volume', 'High', 'Low'];
     
-    // 构建数据行
+    // Build data rows
     const rows = appState.filteredData.map((crypto, index) => [
         index + 1,
         crypto.name,
@@ -725,7 +725,7 @@ function exportToCSV() {
         crypto.low_24h || 'N/A'
     ]);
 
-    // 生成 CSV 内容
+    // Generate CSV content
     const csvContent = [
         headers.join(','),
         ...rows.map(row => row.map(cell => {
@@ -736,7 +736,7 @@ function exportToCSV() {
         }).join(','))
     ].join('\n');
 
-    // 创建 Blob 并下载
+    // Create Blob and download
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
@@ -751,7 +751,7 @@ function exportToCSV() {
 }
 
 // ============================================
-// 投资组合管理
+// Portfolio management
 // ============================================
 function addPortfolioItem() {
     const cryptoInput = document.getElementById('portfolioCrypto');
@@ -763,17 +763,17 @@ function addPortfolioItem() {
     const buyPrice = parseFloat(buyPriceInput.value);
 
     if (!crypto || isNaN(amount) || isNaN(buyPrice) || amount <= 0 || buyPrice <= 0) {
-        alert('请填写完整且有效的数据');
+        alert('Please enter complete and valid data');
         return;
     }
 
-    // 查找币种
+    // Find cryptocurrency
     const cryptoData = appState.cryptoData.find(c => 
         c.name.toLowerCase() === crypto || c.symbol.toLowerCase() === crypto
     );
 
     if (!cryptoData) {
-        alert('未找到该币种，请输入正确的币种名称或代码');
+        alert('Coin not found. Please enter a valid crypto name or symbol');
         return;
     }
 
@@ -798,7 +798,7 @@ function addPortfolioItem() {
 }
 
 function removePortfolioItem(index) {
-    if (confirm('确定要删除该持仓吗？')) {
+    if (confirm('Are you sure you want to delete this position?')) {
         appState.portfolio.splice(index, 1);
         localStorage.setItem('portfolio', JSON.stringify(appState.portfolio));
         displayPortfolio();
@@ -811,7 +811,7 @@ function displayPortfolio() {
     if (!portfolioList) return;
 
     if (appState.portfolio.length === 0) {
-        portfolioList.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--text-secondary);">暂无持仓</div>';
+        portfolioList.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--text-secondary);">No holdings available</div>';
         return;
     }
 
@@ -829,23 +829,23 @@ function displayPortfolio() {
                 </div>
                 <div class="portfolio-item-details">
                     <div class="portfolio-item-detail">
-                        <div class="portfolio-item-detail-label">持仓数量</div>
+                        <div class="portfolio-item-detail-label">Amount</div>
                         <div class="portfolio-item-detail-value">${item.amount.toFixed(8)}</div>
                     </div>
                     <div class="portfolio-item-detail">
-                        <div class="portfolio-item-detail-label">买入价格</div>
+                        <div class="portfolio-item-detail-label">Buy Price</div>
                         <div class="portfolio-item-detail-value">$${item.buyPrice.toFixed(2)}</div>
                     </div>
                     <div class="portfolio-item-detail">
-                        <div class="portfolio-item-detail-label">当前价格</div>
+                        <div class="portfolio-item-detail-label">Current Price</div>
                         <div class="portfolio-item-detail-value">$${item.currentPrice.toFixed(2)}</div>
                     </div>
                     <div class="portfolio-item-detail">
-                        <div class="portfolio-item-detail-label">当前价值</div>
+                        <div class="portfolio-item-detail-label">Current Value</div>
                         <div class="portfolio-item-detail-value">$${currentValue.toFixed(2)}</div>
                     </div>
                     <div class="portfolio-item-detail" style="grid-column: 1 / -1;">
-                        <div class="portfolio-item-detail-label">收益/亏损</div>
+                        <div class="portfolio-item-detail-label">Gain/Loss</div>
                         <div class="portfolio-item-detail-value" style="color: ${isProfit ? 'var(--success-color)' : 'var(--danger-color)'};">
                             ${isProfit ? '+' : ''}$${gainLoss.toFixed(2)} (${gainLossPercent}%)
                         </div>
@@ -857,7 +857,7 @@ function displayPortfolio() {
 }
 
 function updatePortfolioStats() {
-    // 更新 portfolio 中的当前价格
+    // Update current price in portfolio
     appState.portfolio.forEach(item => {
         const cryptoData = appState.cryptoData.find(c => c.id === item.id);
         if (cryptoData) {
@@ -888,7 +888,7 @@ function updatePortfolioStats() {
 }
 
 // ============================================
-// 币种对比分析
+// Cryptocurrency comparison
 // ============================================
 let comparisonCryptos = [];
 
@@ -897,7 +897,7 @@ function addComparisonCrypto(slot) {
     const cryptoName = input.value.trim().toLowerCase();
     
     if (!cryptoName) {
-        alert('请输入币种名称或代码');
+        alert('Please enter a cryptocurrency name or symbol');
         return;
     }
 
@@ -906,13 +906,13 @@ function addComparisonCrypto(slot) {
     );
 
     if (!cryptoData) {
-        alert('未找到该币种');
+        alert('Coin not found');
         return;
     }
 
-    // 检查是否已添加
+    // Check if already added
     if (comparisonCryptos.some(c => c.id === cryptoData.id)) {
-        alert('该币种已添加到对比');
+        alert('This coin is already added for comparison');
         return;
     }
 
@@ -936,11 +936,11 @@ function displayComparison() {
     const container = document.getElementById('comparisonContainer');
     
     if (comparisonCryptos.length === 0) {
-        container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--text-secondary);">暂无对比数据，请选择币种对比</div>';
+        container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--text-secondary);">No comparison data available. Please choose coins to compare.</div>';
         return;
     }
 
-    // 显示对比卡片
+    // Display comparison cards
     const cardsHTML = comparisonCryptos.map(crypto => {
         const indicators = calculateTechnicalIndicators(crypto);
         return `
@@ -951,35 +951,35 @@ function displayComparison() {
                 </div>
                 <div class="comparison-metrics">
                     <div class="metric-item">
-                        <span class="metric-label">价格</span>
+                        <span class="metric-label">Price</span>
                         <span class="metric-value">$${crypto.current_price.toFixed(2)}</span>
                     </div>
                     <div class="metric-item">
-                        <span class="metric-label">市值</span>
+                        <span class="metric-label">Market Cap</span>
                         <span class="metric-value">${formatCurrency(crypto.market_cap || 0)}</span>
                     </div>
                     <div class="metric-item">
-                        <span class="metric-label">24h涨跌</span>
+                        <span class="metric-label">24h Change</span>
                         <span class="metric-value" style="color: ${(crypto.price_change_percentage_24h || 0) >= 0 ? 'var(--success-color)' : 'var(--danger-color)'};">
                             ${((crypto.price_change_percentage_24h || 0) >= 0 ? '+' : '')}${(crypto.price_change_percentage_24h || 0).toFixed(2)}%
                         </span>
                     </div>
                     <div class="metric-item">
-                        <span class="metric-label">7d涨跌</span>
+                        <span class="metric-label">7d Change</span>
                         <span class="metric-value" style="color: ${(crypto.price_change_percentage_7d || 0) >= 0 ? 'var(--success-color)' : 'var(--danger-color)'};">
                             ${((crypto.price_change_percentage_7d || 0) >= 0 ? '+' : '')}${(crypto.price_change_percentage_7d || 0).toFixed(2)}%
                         </span>
                     </div>
                     <div class="metric-item">
-                        <span class="metric-label">24h交易量</span>
+                        <span class="metric-label">24h Volume</span>
                         <span class="metric-value">${formatCurrency(crypto.total_volume || 0)}</span>
                     </div>
                     <div class="metric-item">
-                        <span class="metric-label">RSI(14)</span>
+                        <span class="metric-label">RSI (14)</span>
                         <span class="metric-value">${indicators.rsi.toFixed(2)}</span>
                     </div>
                     <div class="metric-item">
-                        <span class="metric-label">波动率</span>
+                        <span class="metric-label">Volatility</span>
                         <span class="metric-value">${indicators.volatility.toFixed(2)}%</span>
                     </div>
                 </div>
@@ -989,7 +989,7 @@ function displayComparison() {
 
     container.innerHTML = cardsHTML;
 
-    // 显示对比表格
+    // Display comparison table
     if (comparisonCryptos.length > 1) {
         const tableHTML = createComparisonTable();
         container.innerHTML += tableHTML;
@@ -1000,7 +1000,7 @@ function createComparisonTable() {
     let html = `<table class="comparison-table" style="grid-column: 1/-1;">
         <thead>
             <tr>
-                <th>指标</th>`;
+                <th>Metric</th>`;
     
     comparisonCryptos.forEach(crypto => {
         html += `<th>${crypto.symbol.toUpperCase()}</th>`;
@@ -1010,7 +1010,7 @@ function createComparisonTable() {
         </thead>
         <tbody>
             <tr>
-                <td>价格 (USD)</td>`;
+                <td>Price (USD)</td>`;
     
     comparisonCryptos.forEach(crypto => {
         html += `<td>$${crypto.current_price.toFixed(2)}</td>`;
@@ -1018,7 +1018,7 @@ function createComparisonTable() {
     
     html += `</tr>
             <tr>
-                <td>市值</td>`;
+                <td>Market Cap</td>`;
     
     comparisonCryptos.forEach(crypto => {
         html += `<td>${formatCurrency(crypto.market_cap || 0)}</td>`;
@@ -1026,7 +1026,7 @@ function createComparisonTable() {
     
     html += `</tr>
             <tr>
-                <td>24h涨跌</td>`;
+                <td>24h Change</td>`;
     
     comparisonCryptos.forEach(crypto => {
         const change = (crypto.price_change_percentage_24h || 0).toFixed(2);
@@ -1036,7 +1036,7 @@ function createComparisonTable() {
     
     html += `</tr>
             <tr>
-                <td>7d涨跌</td>`;
+                <td>7d Change</td>`;
     
     comparisonCryptos.forEach(crypto => {
         const change = (crypto.price_change_percentage_7d || 0).toFixed(2);
@@ -1052,16 +1052,16 @@ function createComparisonTable() {
 }
 
 // ============================================
-// 技术指标计算
+// Technical indicator calculation
 // ============================================
 function calculateTechnicalIndicators(crypto) {
-    // RSI(14) - 简化计算，基于 24h 价格变化
+    // RSI (14) - simplified calculation based on 24h price changes
     const rsi = calculateRSI(crypto);
     
-    // 波动率 - 基于价格变化百分比
+    // Volatility - based on percentage price changes
     const volatility = Math.abs(crypto.price_change_percentage_24h || 0);
     
-    // 强度指标
+    // Strength indicator
     const strength = calculateStrength(crypto);
     
     return {
@@ -1072,20 +1072,20 @@ function calculateTechnicalIndicators(crypto) {
 }
 
 function calculateRSI(crypto) {
-    // 简化的 RSI 计算：基于价格涨跌
+    // Simplified RSI calculation based on price changes
     const change24h = crypto.price_change_percentage_24h || 0;
     const change7d = crypto.price_change_percentage_7d || 0;
     const changeAvg = (Math.abs(change24h) + Math.abs(change7d)) / 2;
     
-    // 将价格变化转换为 RSI 值 (0-100)
-    let rsi = 50 + (change24h * 5); // 基准 50，变化幅度影响
+    // Convert price change into RSI value (0-100)
+    let rsi = 50 + (change24h * 5); // baseline 50 with variation influence
     rsi = Math.max(0, Math.min(100, rsi));
     
     return rsi;
 }
 
 function calculateStrength(crypto) {
-    // 市场强度指标：基于价格、交易量、市值
+    // Market strength indicator based on price, volume, and market cap
     const priceStrength = crypto.current_price > 0 ? Math.log(crypto.current_price) : 0;
     const volumeStrength = crypto.total_volume ? Math.log(crypto.total_volume) : 0;
     const mcStrength = crypto.market_cap ? Math.log(crypto.market_cap) : 0;
@@ -1094,7 +1094,7 @@ function calculateStrength(crypto) {
 }
 
 // ============================================
-// 历史价格图表
+// Historical Price Charts
 // ============================================
 let priceChart = null;
 
@@ -1106,7 +1106,7 @@ async function loadPriceChart() {
     const days = periodSelect.value;
 
     if (!cryptoName) {
-        alert('请选择币种');
+        alert('Please choose a coin');
         return;
     }
 
@@ -1115,28 +1115,28 @@ async function loadPriceChart() {
     );
 
     if (!cryptoData) {
-        alert('未找到该币种');
+        alert('Coin not found');
         return;
     }
 
     try {
-        // 获取历史价格数据
+        // Fetch historical price data
         const response = await fetch(
             `${API_CONFIG.baseUrl}/coins/${cryptoData.id}/market_chart?` +
             `vs_currency=usd&days=${days}&interval=daily`
         );
         const data = await response.json();
         
-        // 处理数据
+        // Process data
         const prices = data.prices.map(p => ({
-            date: new Date(p[0]).toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' }),
+            date: new Date(p[0]).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
             price: p[1]
         }));
 
         displayPriceChart(cryptoData.name, prices);
     } catch (error) {
-        console.error('获取价格数据失败:', error);
-        alert('无法获取价格数据');
+        console.error('Failed to fetch price data:', error);
+        alert('Unable to fetch price data');
     }
 }
 
@@ -1156,7 +1156,7 @@ function displayPriceChart(cryptoName, prices) {
         data: {
             labels: dates,
             datasets: [{
-                label: `${cryptoName} 价格 (USD)`,
+                label: `${cryptoName} Price (USD)`,
                 data: priceValues,
                 borderColor: '#6366f1',
                 backgroundColor: 'rgba(99, 102, 241, 0.1)',
@@ -1204,14 +1204,14 @@ function displayPriceChart(cryptoName, prices) {
 }
 
 // ============================================
-// 新闻聚合
+// News aggregation
 // ============================================
 let allNews = [];
 let newsFilter = 'all';
 
 async function loadNews() {
     try {
-        // 使用免费 API: Cryptopanic
+        // Use free API: Cryptopanic
         const response = await fetch(
             'https://cryptopanic.com/api/v1/posts/?auth=a&kind=news&public=true'
         );
@@ -1220,8 +1220,8 @@ async function loadNews() {
         allNews = data.results || [];
         displayNews();
     } catch (error) {
-        console.error('获取新闻失败:', error);
-        // 显示演示新闻
+        console.error('Failed to load news:', error);
+        // Show demo news
         displayDemoNews();
     }
 }
@@ -1229,24 +1229,24 @@ async function loadNews() {
 function displayDemoNews() {
     allNews = [
         {
-            title: '比特币突破新高',
-            description: '比特币价格今日创下历史新高，市场情绪乐观。',
+            title: 'Bitcoin hits a new high',
+            description: 'Bitcoin reached a record high today as market sentiment remains optimistic.',
             source: { title: 'CryptoNews' },
             url: 'https://www.coindesk.com/markets/',
             created_at: new Date().toISOString(),
             category: 'bitcoin'
         },
         {
-            title: '以太坊升级进展',
-            description: '以太坊第二层扩容方案取得重大进展，性能提升显著。',
+            title: 'Ethereum upgrade progress',
+            description: 'Ethereum layer-2 scaling progress shows significant performance improvements.',
             source: { title: 'Ethereum Blog' },
             url: 'https://ethereum.org/en/blog/',
             created_at: new Date(Date.now() - 3600000).toISOString(),
             category: 'ethereum'
         },
         {
-            title: 'DeFi 生态发展',
-            description: 'DeFi 协议总锁定价值(TVL)超过 1000 亿美元，创新应用不断涌现。',
+            title: 'DeFi ecosystem growth',
+            description: 'DeFi total value locked (TVL) exceeds $100 billion with new innovative applications emerging.',
             source: { title: 'DeFi Pulse' },
             url: 'https://defipulse.com/',
             created_at: new Date(Date.now() - 7200000).toISOString(),
@@ -1273,7 +1273,7 @@ function displayNews() {
     }
 
     if (filteredNews.length === 0) {
-        newsFeed.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-secondary);">暂无相关新闻</div>';
+        newsFeed.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-secondary);">No news available</div>';
         return;
     }
 
@@ -1289,25 +1289,25 @@ function displayNews() {
                     <div class="news-item-time">${timeAgo}</div>
                 </div>
                 <div class="news-item-description">
-                    ${news.description || '暂无描述'}
+                    ${news.description || 'No description available'}
                 </div>
                 <div>
                     <span class="news-item-source">${news.source?.title || 'News'}</span>
                 </div>
-                <a href="${newsUrl}" target="_blank" rel="noopener noreferrer" class="news-item-link">阅读全文 →</a>
+                <a href="${newsUrl}" target="_blank" rel="noopener noreferrer" class="news-item-link">Read more →</a>
             </div>
         `;
     }).join('');
 }
 
-function filterNews(category) {
+function filterNews(category, event) {
     newsFilter = category;
     
-    // 更新按钮状态
+    // Update button state
     document.querySelectorAll('.news-filter-btn').forEach(btn => {
         btn.classList.remove('active');
     });
-    event.target.classList.add('active');
+    if (event && event.target) { event.target.classList.add('active'); }
     
     displayNews();
 }
@@ -1316,49 +1316,49 @@ function getTimeAgo(date) {
     const now = new Date();
     const seconds = Math.floor((now - date) / 1000);
     
-    if (seconds < 60) return '刚刚';
-    if (seconds < 3600) return `${Math.floor(seconds / 60)}分钟前`;
-    if (seconds < 86400) return `${Math.floor(seconds / 3600)}小时前`;
-    return `${Math.floor(seconds / 86400)}天前`;
+    if (seconds < 60) return 'Just now';
+    if (seconds < 3600) return `${Math.floor(seconds / 60)} minutes ago`;
+    if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours ago`;
+    return `${Math.floor(seconds / 86400)} days ago`;
 }
 
 // ============================================
-// AI 市场预测功能
+// AI Market Prediction functionality
 // ============================================
 async function generatePrediction() {
     const input = document.getElementById('predictionCryptoInput');
     const cryptoName = input.value.toLowerCase();
     
     if (!cryptoName) {
-        alert('请选择一个币种');
+        alert('Please select a cryptocurrency');
         return;
     }
     
-    // 查找匹配的加密货币
+    // Find matching cryptocurrency
     const crypto = appState.cryptoData.find(c => 
         c.name.toLowerCase().includes(cryptoName) || 
         c.symbol.toLowerCase() === cryptoName
     );
     
     if (!crypto) {
-        alert('未找到该加密货币');
+        alert('Cryptocurrency not found');
         return;
     }
     
     try {
-        // 获取历史价格数据
+        // Fetch historical price data
         const response = await fetch(
             `${API_CONFIG.baseUrl}/coins/${crypto.id}/market_chart?vs_currency=usd&days=90`
         );
         const data = await response.json();
         const prices = data.prices.map(p => p[1]);
         
-        // 计算技术指标
+        // Calculate technical indicators
         const prediction = calculatePrediction(prices, crypto);
         displayPrediction(crypto, prediction, prices);
     } catch (error) {
-        console.error('获取预测数据失败:', error);
-        alert('获取预测数据失败');
+        console.error('Failed to fetch prediction data:', error);
+        alert('Failed to fetch prediction data');
     }
 }
 
@@ -1368,12 +1368,12 @@ function calculatePrediction(prices, crypto) {
     const maxPrice = Math.max(...prices);
     const minPrice = Math.min(...prices);
     
-    // 计算趋势（简单线性回归）
+    // Calculate trend (simple linear regression)
     const trend = calculateTrend(prices);
     const momentum = calculateMomentum(prices);
     const rsi = calculateRSI(prices);
     
-    // 预测方向
+    // Prediction direction
     let direction = 'neutral';
     let confidence = 0;
     
@@ -1387,7 +1387,7 @@ function calculatePrediction(prices, crypto) {
         confidence = 50;
     }
     
-    // 价格目标
+    // Price target
     const volatility = calculateVolatility(prices);
     const resistancePrice = currentPrice + (volatility * 0.5);
     const supportPrice = currentPrice - (volatility * 0.5);
@@ -1404,7 +1404,7 @@ function calculatePrediction(prices, crypto) {
         trend: trend.toFixed(4),
         momentum: momentum.toFixed(4),
         volatility: (volatility * 100).toFixed(2),
-        prices: prices.slice(-30) // 最后30个价格用于图表
+        prices: prices.slice(-30) // Last 30 prices used for charts
     };
 }
 
@@ -1436,24 +1436,24 @@ function calculateVolatility(prices) {
 function displayPrediction(crypto, prediction, prices) {
     const container = document.getElementById('predictionContainer');
     const directionEmoji = prediction.direction === 'bullish' ? '🚀' : prediction.direction === 'bearish' ? '📉' : '➡️';
-    const directionCN = prediction.direction === 'bullish' ? '看涨' : prediction.direction === 'bearish' ? '看跌' : '震荡';
+    const directionCN = prediction.direction === 'bullish' ? 'Bullish' : prediction.direction === 'bearish' ? 'Bearish' : 'Neutral';
     const trendClass = prediction.direction === 'bullish' ? 'positive' : prediction.direction === 'bearish' ? 'negative' : '';
     
     container.innerHTML = `
         <div class="prediction-card">
             <div class="prediction-header">
                 <div class="prediction-name">${directionEmoji} ${crypto.name}</div>
-                <div class="prediction-info">${crypto.symbol.toUpperCase()} - 信号强度: ${prediction.confidence}%</div>
+                <div class="prediction-info">${crypto.symbol.toUpperCase()} - Signal strength: ${prediction.confidence}%</div>
             </div>
             
             <div class="prediction-metrics">
                 <div class="metric">
-                    <div class="metric-label">当前价格</div>
+                    <div class="metric-label">Current Price</div>
                     <div class="metric-value">$${prediction.currentPrice}</div>
                 </div>
                 
                 <div class="metric">
-                    <div class="metric-label">预测目标价</div>
+                    <div class="metric-label">Target Price</div>
                     <div class="metric-value">$${prediction.targetPrice}</div>
                     <div class="metric-trend ${prediction.targetPrice > prediction.currentPrice ? 'positive' : 'negative'}">
                         ${prediction.targetPrice > prediction.currentPrice ? '↑' : '↓'} 
@@ -1462,15 +1462,15 @@ function displayPrediction(crypto, prediction, prices) {
                 </div>
                 
                 <div class="metric">
-                    <div class="metric-label">支撑位 / 阻力位</div>
+                    <div class="metric-label">Support / Resistance</div>
                     <div class="metric-value">$${prediction.support} / $${prediction.resistance}</div>
                 </div>
                 
                 <div class="metric">
-                    <div class="metric-label">趋势评分</div>
+                    <div class="metric-label">Trend Score</div>
                     <div class="metric-value">${directionCN} (${prediction.confidence}%)</div>
                     <div class="metric-trend ${trendClass}">
-                        RSI: ${prediction.rsi} | 波动率: ${prediction.volatility}%
+                        RSI: ${prediction.rsi} | Volatility: ${prediction.volatility}%
                     </div>
                 </div>
             </div>
@@ -1479,7 +1479,7 @@ function displayPrediction(crypto, prediction, prices) {
         </div>
     `;
     
-    // 简单的图表显示
+    // Simple chart rendering
     drawSimpleChart('predictionChart', prediction.prices);
 }
 
@@ -1495,7 +1495,7 @@ function drawSimpleChart(containerId, prices) {
     
     let svg = `<svg width="100%" height="100%" viewBox="0 0 ${width} ${height}">`;
     
-    // 画线
+    // Draw line
     let pathD = 'M';
     prices.forEach((price, index) => {
         const x = (index / (prices.length - 1)) * width;
@@ -1510,7 +1510,7 @@ function drawSimpleChart(containerId, prices) {
 }
 
 // ============================================
-// 实时 WebSocket 价格推送
+// Real-time WebSocket price feed
 // ============================================
 let websocketConnection = null;
 let selectedRealtimeCrypto = null;
@@ -1520,7 +1520,7 @@ function toggleRealtimeConnection() {
     const cryptoName = input.value.toLowerCase();
     
     if (!cryptoName) {
-        alert('请先选择一个币种');
+        alert('Please select a cryptocurrency first');
         return;
     }
     
@@ -1530,7 +1530,7 @@ function toggleRealtimeConnection() {
     );
     
     if (!crypto) {
-        alert('未找到该加密货币');
+        alert('Cryptocurrency not found');
         return;
     }
     
@@ -1546,13 +1546,13 @@ function connectRealtimeData(crypto) {
     const btn = document.getElementById('connectBtn');
     const status = document.getElementById('connectionStatus');
     
-    // 由于免费 WebSocket 服务有限，我们使用轮询方式模拟实时推送
-    status.textContent = '● 已连接';
+    // Due to free WebSocket limits, we simulate the real-time feed with polling
+    status.textContent = '● Connected';
     status.classList.remove('disconnected');
     status.classList.add('connected');
-    btn.textContent = '断开连接';
+    btn.textContent = 'Disconnect';
     
-    // 启动轮询
+    // Start polling
     const pollInterval = setInterval(() => {
         updateRealtimePrice(crypto, pollInterval);
     }, 2000);
@@ -1571,11 +1571,11 @@ function disconnectRealtimeData() {
     const status = document.getElementById('connectionStatus');
     const container = document.getElementById('realtimePrices');
     
-    status.textContent = '● 未连接';
+    status.textContent = '● Disconnected';
     status.classList.add('disconnected');
     status.classList.remove('connected');
-    btn.textContent = '连接实时数据';
-    container.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-secondary);">未连接</div>';
+    btn.textContent = 'Connect Live Data';
+    container.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-secondary);">Disconnected</div>';
     selectedRealtimeCrypto = null;
 }
 
@@ -1611,38 +1611,38 @@ async function updateRealtimePrice(crypto, interval) {
                 <div>
                     <div class="price-timestamp">${timestamp}</div>
                     <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">
-                        交易量: $${(priceData.usd_24h_vol / 1000000).toFixed(2)}M
+                        Volume: $${(priceData.usd_24h_vol / 1000000).toFixed(2)}M
                     </div>
                 </div>
             </div>
         `;
     } catch (error) {
-        console.error('更新实时价格失败:', error);
+        console.error('Failed to update real-time prices:', error);
     }
 }
 
 // ============================================
-// 币种详情页面功能
+// Crypto detail page functionality
 // ============================================
 let currentDetailCrypto = null;
 
 function openDetailModal(cryptoId) {
-    // 查找币种
+    // Find cryptocurrency
     const crypto = appState.cryptoData.find(c => c.id === cryptoId);
     if (!crypto) {
-        alert('未找到该币种');
+        alert('Coin not found');
         return;
     }
 
     currentDetailCrypto = crypto;
     const modal = document.getElementById('cryptoDetailModal');
     
-    // 填充基础信息
+    // Populate base information
     document.getElementById('detailCryptoName').textContent = crypto.name;
     document.getElementById('detailCryptoSymbol').textContent = `#${crypto.market_cap_rank || 'N/A'} · ${crypto.symbol.toUpperCase()}`;
     document.getElementById('detailCryptoImage').src = crypto.image || '';
 
-    // 价格信息
+    // Price information
     document.getElementById('detailPrice').textContent = `$${formatNumber(crypto.current_price)}`;
     document.getElementById('detail24hChange').innerHTML = `<span class="${(crypto.price_change_percentage_24h || 0) >= 0 ? 'positive' : 'negative'} value">${(crypto.price_change_percentage_24h || 0) >= 0 ? '↑' : '↓'} ${Math.abs(crypto.price_change_percentage_24h || 0).toFixed(2)}%</span>`;
     document.getElementById('detail7dChange').innerHTML = `<span class="${(crypto.price_change_percentage_7d || 0) >= 0 ? 'positive' : 'negative'} value">${(crypto.price_change_percentage_7d || 0) >= 0 ? '↑' : '↓'} ${Math.abs(crypto.price_change_percentage_7d || 0).toFixed(2)}%</span>`;
@@ -1650,7 +1650,7 @@ function openDetailModal(cryptoId) {
     const change30d = crypto.price_change_percentage_30d || 0;
     document.getElementById('detail30dChange').innerHTML = `<span class="${change30d >= 0 ? 'positive' : 'negative'} value">${change30d >= 0 ? '↑' : '↓'} ${Math.abs(change30d).toFixed(2)}%</span>`;
 
-    // 市场数据
+    // Market Data
     document.getElementById('detailRank').textContent = `#${crypto.market_cap_rank || 'N/A'}`;
     document.getElementById('detailMarketCap').textContent = formatCurrency(crypto.market_cap || 0);
     document.getElementById('detailVolume').textContent = formatCurrency(crypto.total_volume || 0);
@@ -1658,24 +1658,24 @@ function openDetailModal(cryptoId) {
     const marketCapPercentage = crypto.market_cap_percentage ? crypto.market_cap_percentage.toFixed(2) : 'N/A';
     document.getElementById('detailMarketCapPercentage').textContent = `${marketCapPercentage}%`;
 
-    // 价格范围
+    // Price Range
     document.getElementById('detailHigh24h').textContent = `$${formatNumber(crypto.high_24h || 0)}`;
     document.getElementById('detailLow24h').textContent = `$${formatNumber(crypto.low_24h || 0)}`;
     document.getElementById('detailAth').textContent = `$${formatNumber(crypto.ath || 0)}`;
     document.getElementById('detailAtl').textContent = `$${formatNumber(crypto.atl || 0)}`;
 
-    // 供应量
+    // Supply
     document.getElementById('detailCirculatingSupply').textContent = crypto.circulating_supply ? formatNumber(crypto.circulating_supply) + ' ' + crypto.symbol.toUpperCase() : 'N/A';
     document.getElementById('detailTotalSupply').textContent = crypto.total_supply ? formatNumber(crypto.total_supply) + ' ' + crypto.symbol.toUpperCase() : 'N/A';
-    document.getElementById('detailMaxSupply').textContent = crypto.max_supply ? formatNumber(crypto.max_supply) + ' ' + crypto.symbol.toUpperCase() : '无限制';
+    document.getElementById('detailMaxSupply').textContent = crypto.max_supply ? formatNumber(crypto.max_supply) + ' ' + crypto.symbol.toUpperCase() : 'Unlimited';
 
-    // 描述（可选）
-    document.getElementById('detailDescription').textContent = '加密货币详细信息加载中...';
+    // Description (optional)
+    document.getElementById('detailDescription').textContent = 'Crypto details loading...';
     
-    // 获取完整信息
+    // Fetch complete information
     fetchDetailedCryptoInfo(cryptoId);
 
-    // 显示模态框
+    // Show modal
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
 }
@@ -1694,19 +1694,19 @@ async function fetchDetailedCryptoInfo(cryptoId) {
         );
         const data = await response.json();
 
-        // 更新描述
-        const description = data.description?.zh || data.description?.en || '暂无描述';
+        // Update description
+        const description = data.description?.zh || data.description?.en || 'No description available';
         const descriptionText = description.replace(/<[^>]*>/g, '').substring(0, 500);
-        document.getElementById('detailDescription').textContent = descriptionText || '暂无描述';
+        document.getElementById('detailDescription').textContent = descriptionText || 'No description available';
 
-        // 更新链接
+        // Update links
         const linksContainer = document.getElementById('detailLinks');
         const links = [];
         
-        if (data.links?.homepage?.[0]) links.push({ name: '官网', url: data.links.homepage[0] });
-        if (data.links?.explorer?.[0]) links.push({ name: '浏览器', url: data.links.explorer[0] });
-        if (data.links?.source_code?.[0]) links.push({ name: '代码', url: data.links.source_code[0] });
-        if (data.links?.whitepaper) links.push({ name: '白皮书', url: data.links.whitepaper });
+        if (data.links?.homepage?.[0]) links.push({ name: 'Website', url: data.links.homepage[0] });
+        if (data.links?.explorer?.[0]) links.push({ name: 'Explorer', url: data.links.explorer[0] });
+        if (data.links?.source_code?.[0]) links.push({ name: 'Code', url: data.links.source_code[0] });
+        if (data.links?.whitepaper) links.push({ name: 'Whitepaper', url: data.links.whitepaper });
         if (data.links?.twitter_screen_name) links.push({ name: 'Twitter', url: `https://twitter.com/${data.links.twitter_screen_name}` });
         if (data.links?.github_repos?.[0]) links.push({ name: 'GitHub', url: data.links.github_repos[0] });
 
@@ -1715,18 +1715,18 @@ async function fetchDetailedCryptoInfo(cryptoId) {
         ).join('');
 
         if (links.length === 0) {
-            linksContainer.innerHTML = '<p style="color: var(--text-secondary);">暂无官方链接</p>';
+            linksContainer.innerHTML = '<p style="color: var(--text-secondary);">No official links available</p>';
         }
     } catch (error) {
-        console.error('获取详细信息失败:', error);
-        document.getElementById('detailDescription').textContent = '获取详细信息失败';
+        console.error('Failed to fetch detailed information:', error);
+        document.getElementById('detailDescription').textContent = 'Failed to fetch detailed information';
     }
 }
 
 function toggleDetailFavorite() {
     if (!currentDetailCrypto) return;
     toggleFavorite(currentDetailCrypto.id, { stopPropagation: () => {} });
-    alert('收藏成功');
+    alert('Favorite set successfully');
 }
 
 function showDetailAlert() {
@@ -1738,12 +1738,12 @@ function showDetailAlert() {
 function addDetailToPortfolio() {
     if (!currentDetailCrypto) return;
     
-    const quantity = prompt(`请输入 ${currentDetailCrypto.name} 的数量:`);
+    const quantity = prompt(`Please enter the quantity for ${currentDetailCrypto.name}:`);
     if (quantity === null || quantity === '') return;
 
     const qty = parseFloat(quantity);
     if (isNaN(qty) || qty <= 0) {
-        alert('请输入有效的数量');
+        alert('Please enter a valid quantity');
         return;
     }
 
@@ -1761,6 +1761,6 @@ function addDetailToPortfolio() {
     localStorage.setItem('portfolio', JSON.stringify(appState.portfolio));
     displayPortfolio();
     updatePortfolioStats();
-    alert(`已添加 ${qty} ${currentDetailCrypto.symbol.toUpperCase()} 到投资组合`);
+    alert(`Added ${qty} ${currentDetailCrypto.symbol.toUpperCase()} to portfolio`);
     closeDetailModal();
 }

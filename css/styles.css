@@ -1,5 +1,5 @@
 /* ============================================
-   全局样式和重置
+   Global Styles and Reset
    ============================================ */
 * {
     margin: 0;
@@ -22,7 +22,7 @@
     --shadow-lg: 0 10px 32px rgba(0,0,0,0.35);
 }
 
-/* 浅色主题 */
+/* Light Theme */
 body.light-theme {
     --dark-bg: #f5f7fa;
     --card-bg: #ffffff;
@@ -46,7 +46,7 @@ html {
 }
 
 /* ============================================
-   导航栏
+   Navbar
    ============================================ */
 .navbar {
     background: rgba(30,32,48,0.98);
@@ -128,7 +128,7 @@ html {
     transition: all 0.3s ease;
 }
 
-/* 主题切换按钮 */
+/* Theme Toggle Button */
 .theme-toggle {
     background: none;
     border: none;
@@ -148,7 +148,7 @@ html {
 }
 
 /* ============================================
-   英雄区域
+   Hero Section
    ============================================ */
 .hero {
     position: relative;
@@ -266,7 +266,7 @@ html {
 }
 
 /* ============================================
-   统计区域
+   Stats Section
    ============================================ */
 .stats-section {
     background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
@@ -321,7 +321,7 @@ html {
 }
 
 /* ============================================
-   主容器
+   Main Container
    ============================================ */
 .main-container {
     max-width: 1200px;
@@ -329,7 +329,7 @@ html {
 }
 
 /* ============================================
-   分类区域
+   Section Layout
    ============================================ */
 .overview-section,
 .analysis-section,
@@ -359,7 +359,7 @@ html {
 }
 
 /* ============================================
-   过滤控制
+   Filter Controls
    ============================================ */
 .filter-controls {
     display: flex;
@@ -394,7 +394,7 @@ html {
 }
 
 /* ============================================
-   加密货币网格
+   Crypto Grid
    ============================================ */
 .crypto-grid {
     display: grid;
@@ -562,7 +562,7 @@ html {
 }
 
 /* ============================================
-   分析区域
+   Analysis Section
    ============================================ */
 .analysis-grid {
     display: grid;
@@ -620,7 +620,7 @@ html {
 }
 
 /* ============================================
-   投资组合区域
+   Portfolio Section
    ============================================ */
 .portfolio-section {
     padding: 4rem 2rem;
@@ -780,7 +780,7 @@ html {
 }
 
 /* ============================================
-   币种对比分析区域
+   Crypto Comparison Section
    ============================================ */
 .comparison-section {
     padding: 4rem 2rem;
@@ -899,7 +899,7 @@ html {
 }
 
 /* ============================================
-   价格图表区域
+   Price Charts Section
    ============================================ */
 .charts-section {
     padding: 4rem 2rem;
@@ -948,7 +948,7 @@ html {
 }
 
 /* ============================================
-   AI 市场预测区域
+   AI Market Prediction Section
    ============================================ */
 .prediction-section {
     padding: 4rem 2rem;
@@ -1065,7 +1065,7 @@ html {
 }
 
 /* ============================================
-   实时价格推送区域
+   Real-time Price Feed Section
    ============================================ */
 .realtime-section {
     padding: 4rem 2rem;
@@ -1194,7 +1194,7 @@ html {
 }
 
 /* ============================================
-   新闻区域
+   News Section
    ============================================ */
 .news-section {
     padding: 4rem 2rem;
@@ -1338,7 +1338,7 @@ html {
 }
 
 /* ============================================
-   页脚
+   Footer
    ============================================ */
 .footer {
     background: linear-gradient(135deg, #18181b 0%, #232336 100%);
@@ -1398,7 +1398,7 @@ html {
 }
 
 /* ============================================
-   币种详情模态框
+   Detail Modal
    ============================================ */
 .modal {
     display: none;
@@ -1608,14 +1608,14 @@ html {
 }
 
 /* ============================================
-   响应式设计 - 平板设备 (768px 以下)
+   Responsive Design - Tablet Devices (below 768px)
    ============================================ */
 @media (max-width: 768px) {
     body {
         font-size: 14px;
     }
 
-    /* 导航栏优化 */
+    /* Navbar Optimization */
     .navbar-container {
         padding: 0.75rem 1rem;
         gap: 1rem;
@@ -1663,7 +1663,7 @@ html {
         display: block;
     }
 
-    /* Hero 区域 */
+    /* Hero Section */
     .hero {
         flex-direction: column;
         text-align: center;
@@ -1690,7 +1690,7 @@ html {
         opacity: 0.15;
     }
 
-    /* 统计卡片 */
+    /* Stats Cards */
     .stats-section {
         padding: 2rem 1rem;
     }
@@ -1708,13 +1708,13 @@ html {
         font-size: 1.25rem;
     }
 
-    /* 主容器 */
+    /* Main Container */
     .main-container {
         max-width: 100%;
         padding: 0;
     }
 
-    /* 分类区域 */
+    /* Section Layout */
     .overview-section,
     .analysis-section,
     .about-section,
@@ -1734,7 +1734,7 @@ html {
         font-size: 0.9rem;
     }
 
-    /* 过滤控制 */
+    /* Filter Controls */
     .filter-controls {
         flex-direction: column;
         gap: 0.75rem;
@@ -1747,7 +1747,7 @@ html {
         padding: 0.6rem 0.8rem;
     }
 
-    /* 加密货币网格 */
+    /* Crypto Grid */
     .crypto-grid {
         grid-template-columns: 1fr;
         gap: 1rem;
@@ -1770,7 +1770,7 @@ html {
         margin-bottom: 0.5rem;
     }
 
-    /* 分析网格 */
+    /* Analysis Grid */
     .analysis-grid {
         grid-template-columns: 1fr;
         gap: 1rem;
@@ -1785,7 +1785,7 @@ html {
         margin-bottom: 0.75rem;
     }
 
-    /* 投资组合 */
+    /* Portfolio */
     .portfolio-container {
         grid-template-columns: 1fr;
         gap: 1.5rem;
@@ -1815,7 +1815,7 @@ html {
         padding: 1rem;
     }
 
-    /* 对比分析 */
+    /* Comparison */
     .comparison-controls {
         flex-direction: column;
         gap: 0.75rem;
@@ -1846,7 +1846,7 @@ html {
         padding: 0.5rem;
     }
 
-    /* 图表区域 */
+    /* Charts Section */
     .chart-controls {
         flex-direction: column;
         gap: 0.75rem;
@@ -1864,7 +1864,7 @@ html {
         height: 300px;
     }
 
-    /* AI 预测区域 */
+    /* AI Prediction Section */
     .prediction-controls {
         flex-direction: column;
         gap: 0.75rem;
@@ -1881,7 +1881,7 @@ html {
         grid-template-columns: 1fr;
     }
 
-    /* 实时推送区域 */
+    /* Realtime Feed Section */
     .realtime-controls {
         flex-direction: column;
         gap: 0.75rem;
@@ -1899,7 +1899,7 @@ html {
         gap: 1rem;
     }
 
-    /* 新闻区域 */
+    /* News Section */
     .news-filters {
         gap: 0.5rem;
     }
@@ -1926,7 +1926,7 @@ html {
         margin-left: 0;
     }
 
-    /* 模态框 */
+    /* Modal */
     .modal-content {
         width: 95%;
         max-height: 95vh;
@@ -1950,7 +1950,7 @@ html {
         grid-template-columns: 1fr;
     }
 
-    /* 关于区域 */
+    /* About Section */
     .about-content {
         grid-template-columns: 1fr;
     }
@@ -1963,7 +1963,7 @@ html {
         font-size: 2rem;
     }
 
-    /* 页脚 */
+    /* Footer */
     .footer {
         padding: 2rem 1rem;
     }
@@ -1980,7 +1980,7 @@ html {
 }
 
 /* ============================================
-   响应式设计 - 手机设备 (480px 以下)
+   Responsive Design - Mobile Devices (below 480px)
    ============================================ */
 @media (max-width: 480px) {
     html {
@@ -1991,7 +1991,7 @@ html {
         font-size: 13px;
     }
 
-    /* 导航栏 */
+    /* Navbar */
     .navbar-container {
         padding: 0.5rem 0.75rem;
     }
@@ -2010,7 +2010,7 @@ html {
         padding: 0.3rem;
     }
 
-    /* Hero 区域 */
+    /* Hero Section */
     .hero {
         min-height: 250px;
         padding: 1.5rem 1rem;
@@ -2035,7 +2035,7 @@ html {
         font-size: 3rem;
     }
 
-    /* 统计卡片 */
+    /* Stats Cards */
     .stats-section {
         padding: 1.5rem 0.75rem;
     }
@@ -2057,7 +2057,7 @@ html {
         font-size: 0.75rem;
     }
 
-    /* 分类区域 */
+    /* Section Layout */
     .overview-section,
     .analysis-section,
     .about-section,
@@ -2080,7 +2080,7 @@ html {
         font-size: 0.8rem;
     }
 
-    /* 过滤控制 */
+    /* Filter Controls */
     .filter-controls {
         gap: 0.5rem;
         margin-bottom: 1rem;
@@ -2092,7 +2092,7 @@ html {
         font-size: 13px;
     }
 
-    /* 加密货币卡片 */
+    /* Crypto Cards */
     .crypto-card {
         padding: 0.75rem;
     }
@@ -2126,7 +2126,7 @@ html {
         font-size: 0.85rem;
     }
 
-    /* 投资组合 */
+    /* Portfolio */
     .portfolio-container {
         gap: 1rem;
     }
@@ -2166,7 +2166,7 @@ html {
         padding: 0.5rem;
     }
 
-    /* 对比分析 */
+    /* Comparison */
     .comparison-controls {
         gap: 0.5rem;
     }
@@ -2209,7 +2209,7 @@ html {
         padding: 0.4rem;
     }
 
-    /* 图表 */
+    /* Charts */
     .chart-controls {
         gap: 0.5rem;
     }
@@ -2225,7 +2225,7 @@ html {
         height: 250px;
     }
 
-    /* AI 预测 */
+    /* AI Prediction */
     .prediction-controls {
         gap: 0.5rem;
     }
@@ -2247,7 +2247,7 @@ html {
         height: 200px;
     }
 
-    /* 实时推送 */
+    /* Realtime Feed */
     .realtime-controls {
         gap: 0.5rem;
     }
@@ -2271,7 +2271,7 @@ html {
         text-align: left;
     }
 
-    /* 新闻 */
+    /* News */
     .news-filters {
         gap: 0.4rem;
     }
@@ -2304,7 +2304,7 @@ html {
         margin-top: 0.5rem;
     }
 
-    /* 关于卡片 */
+    /* About Cards */
     .about-card {
         padding: 1rem;
     }
@@ -2323,7 +2323,7 @@ html {
         font-size: 0.85rem;
     }
 
-    /* 页脚 */
+    /* Footer */
     .footer {
         padding: 1.5rem 0.75rem;
     }
